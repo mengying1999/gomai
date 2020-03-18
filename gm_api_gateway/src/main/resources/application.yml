@@ -16,7 +16,14 @@ zuul:
   prefix: /api # 添加路由前缀
   retryable: true
   routes:
-    goods.service: /goods/** #添加商品微服务的路由
+    goods_service: /goods/** #添加商品微服务的路由
+    user_service: /user/** #添加用户微服务的路由
+    chat_service: /chat/** #添加聊天微服务的路由
+    comment_service: /comment/** #添加评论微服务的路由
+    community_service: /community/** #添加社区微服务的路由
+    feedback_service: /feedback/** #添加用户微服务的路由
+    integral_service: /integral/** #添加用户微服务的路由
+    order_service: /order/** #添加用户微服务的路由
 ribbon:
   ConnectTimeout: 250 # 连接超时时间(ms)
   ReadTimeout: 2000 # 通信超时时间(ms)

@@ -12,6 +12,13 @@
         <module>gm_api_gateway</module>
         <module>gm_common</module>
         <module>gm_goods</module>
+        <module>gm_user</module>
+        <module>gm_order</module>
+        <module>gm_comment</module>
+        <module>gm_community</module>
+        <module>gm_integral</module>
+        <module>gm_chat</module>
+        <module>gm_feedback</module>
     </modules>
     <packaging>pom</packaging>
 

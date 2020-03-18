@@ -10,11 +10,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.gomai.service</groupId>
-    <artifactId>gm_goods</artifactId>
+    <artifactId>gm_integral</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>gm_goods_interface</module>
-        <module>gm_goods_service</module>
+        <module>gm_integral_service</module>
+        <module>gm_integral_interface</module>
     </modules>
 
     <dependencies>
@@ -54,7 +54,7 @@
         </dependency>
         <dependency>
             <groupId>com.gomai.service</groupId>
-            <artifactId>gm_goods_interface</artifactId>
+            <artifactId>gm_integral_interface</artifactId>
             <version>${leyou.latest.version}</version>
         </dependency>
         <dependency>

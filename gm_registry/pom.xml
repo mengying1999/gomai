@@ -11,7 +11,12 @@
     <!--注册中心-->
     <groupId>com.gomai.common</groupId>
     <artifactId>gm_registry</artifactId>
+    <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
+    <modules>
+        <module>gm_registry_service</module>
+        <module>gm_registry_interface</module>
+    </modules>
 
     <dependencies>
         <dependency>

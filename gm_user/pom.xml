@@ -10,13 +10,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.gomai.service</groupId>
-    <artifactId>gm_goods</artifactId>
+    <artifactId>gm_user</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>gm_goods_interface</module>
-        <module>gm_goods_service</module>
+        <module>gm_user_interface</module>
+        <module>gm_user_service</module>
     </modules>
-
     <dependencies>
         <!--Eureka客户端-->
         <dependency>
@@ -54,7 +54,7 @@
         </dependency>
         <dependency>
             <groupId>com.gomai.service</groupId>
-            <artifactId>gm_goods_interface</artifactId>
+            <artifactId>gm_user_interface</artifactId>
             <version>${leyou.latest.version}</version>
         </dependency>
         <dependency>
@@ -62,4 +62,5 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
+
 </project>

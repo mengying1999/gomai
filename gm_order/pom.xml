@@ -10,23 +10,21 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.gomai.service</groupId>
-    <artifactId>gm_goods</artifactId>
+    <artifactId>gm_order</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>gm_goods_interface</module>
-        <module>gm_goods_service</module>
+        <module>gm_order_service</module>
+        <module>gm_order_interface</module>
     </modules>
-
     <dependencies>
-        <!--Eureka客户端-->
+        <!-- springCloud -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-        </dependency>
-        <!--web启动器-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-cloud-dependencies</artifactId>
+            <version>${spring-cloud.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
         </dependency>
         <!-- mybatis启动器 -->
         <dependency>
@@ -52,14 +50,12 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.version}</version>
         </dependency>
+        <!--FastDFS客户端-->
         <dependency>
             <groupId>com.gomai.service</groupId>
-            <artifactId>gm_goods_interface</artifactId>
+            <artifactId>gm_order_interface</artifactId>
             <version>${leyou.latest.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
     </dependencies>
+
 </project>
