@@ -11,8 +11,6 @@
 
     <groupId>com.gomai.common</groupId>
     <artifactId>gm_api_gateway</artifactId>
-    <packaging>pom</packaging>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -26,6 +24,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.didispace</groupId>
+            <artifactId>swagger-butler-core</artifactId>
+            <version>${swagger.version}</version>
         </dependency>
     </dependencies>
 </project>

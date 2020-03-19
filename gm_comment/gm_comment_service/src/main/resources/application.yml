@@ -1,15 +1,16 @@
 server:
-  port: 8081
+  port: 8083
 spring:
   application:
-    name: goods_service
+    name: comment_service
   datasource:
-    url:jdbc:mysq1://117.78.0.140:3306/gomai
+    url: jdbc:mysql://117.78.0.140:3306/gomai?serverTimezone=UTC&characterEncoding=utf8&useUnicode=true&useSSL=false
     username: root
-    password: 123
+    password: 123456
     hikari:
       maximum-pool-size: 30
       minimum-idle: 10
+    driver-class-name: com.mysql.cj.jdbc.Driver
 eureka:
   client:
     service-url:

@@ -11,6 +11,12 @@
 
     <groupId>com.gomai.service</groupId>
     <artifactId>gm_goods_interface</artifactId>
-
-
+    <!--jpa-->
+    <dependencies>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
 </project>

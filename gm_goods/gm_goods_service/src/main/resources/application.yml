@@ -4,12 +4,14 @@ spring:
   application:
     name: goods_service
   datasource:
-    url:jdbc:mysq1://117.78.0.140:3306/gomai
+    url: jdbc:mysql://117.78.0.140:3306/gomai?serverTimezone=UTC&characterEncoding=utf8&useUnicode=true&useSSL=false
     username: root
-    password: 123
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 30
       minimum-idle: 10
+
 eureka:
   client:
     service-url:
