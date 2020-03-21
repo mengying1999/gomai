@@ -12,9 +12,9 @@ public class Category1ServiceImpl implements Category1Service {
     @Autowired
     private Category1Mapper category1Mapper;
 
-    public List<Category1> queryListByParent(Long ca1_id) {
+    public List<Category1> queryListByParent(Integer ca1Id) {
         Category1 category = new Category1();
-        category.setCa1_id(ca1_id);
+        category.setCa1Id(ca1Id);
         return this.category1Mapper.select(category);
     }
 

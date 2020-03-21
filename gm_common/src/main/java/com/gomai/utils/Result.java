@@ -1,10 +1,10 @@
 package com.gomai.utils;
 
 public class Result {
-    private Integer code;
-    private Boolean flag;
-    private String messages;
-    private Object data;
+    private Integer code;  //状态码
+    private Boolean flag;  //成功标志
+    private String messages;  //消息
+    private Object data;  //数据
 
     public Result() {
     }

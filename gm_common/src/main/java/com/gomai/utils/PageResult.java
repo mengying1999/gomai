@@ -3,8 +3,8 @@ package com.gomai.utils;
 import java.util.List;
 
 public class PageResult  <T> {
-    private long total;
-    private List<T> rows;
+    private long total;  //总数
+    private List<T> rows; // 查询结果
     private Long totalPage;// 总页数
 
     public PageResult() {
