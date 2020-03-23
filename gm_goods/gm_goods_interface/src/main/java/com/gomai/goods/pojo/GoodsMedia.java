@@ -1,47 +1,68 @@
 package com.gomai.goods.pojo;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+@Entity
 @Table(name="GoodsMedia")
-public class GoodsMedia {
+public class GoodsMedia {//商品媒体表
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer gm_id; //商品媒体id
-    private Integer g_id; //商品id
-    private String gm_url; //商品媒体地址
-    private Integer gm_type; //商品媒体类别
+    @Column(name = "gm_id")
+    private Integer gmid; //商品媒体id
+    @Column(name = "g_id")
+    private Integer gid; //商品id
+    @Column(name = "gm_url")
+    private String gmurl; //商品媒体地址
+    @Column(name = "gm_type")
+    private Integer gmtype; //商品媒体类别
 
-    public Integer getGm_id() {
-        return gm_id;
+    public GoodsMedia() {
     }
 
-    public void setGm_id(Integer gm_id) {
-        this.gm_id = gm_id;
+    public GoodsMedia(Integer gid, String gmurl, Integer gmtype) {
+        this.gid = gid;
+        this.gmurl = gmurl;
+        this.gmtype = gmtype;
     }
 
-    public Integer getG_id() {
-        return g_id;
+    public Integer getGmid() {
+        return gmid;
     }
 
-    public void setG_id(Integer g_id) {
-        this.g_id = g_id;
+    public void setGmid(Integer gmid) {
+        this.gmid = gmid;
     }
 
-    public String getGm_url() {
-        return gm_url;
+    public Integer getGid() {
+        return gid;
     }
 
-    public void setGm_url(String gm_url) {
-        this.gm_url = gm_url;
+    public void setGid(Integer gid) {
+        this.gid = gid;
     }
 
-    public Integer getGm_type() {
-        return gm_type;
+    public String getGmurl() {
+        return gmurl;
     }
 
-    public void setGm_type(Integer gm_type) {
-        this.gm_type = gm_type;
+    public void setGmurl(String gmurl) {
+        this.gmurl = gmurl;
+    }
+
+    public Integer getGmtype() {
+        return gmtype;
+    }
+
+    public void setGmtype(Integer gmtype) {
+        this.gmtype = gmtype;
+    }
+
+    @Override
+    public String toString() {
+        return "GoodsMedia{" +
+                "gmid=" + gmid +
+                ", gid=" + gid +
+                ", gmurl='" + gmurl + '\'' +
+                ", gmtype=" + gmtype +
+                '}';
     }
 }

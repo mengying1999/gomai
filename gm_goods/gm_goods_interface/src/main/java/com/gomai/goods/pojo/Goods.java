@@ -1,85 +1,118 @@
 package com.gomai.goods.pojo;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.util.Date;
 
+import javax.persistence.*;
+import java.util.Date;
+@Entity
 @Table(name="goods")
 
-public class Goods {
+public class Goods {//商品表
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer g_id; //商品id
-    private Integer u_id;  //发布用户id
-    private Integer ca2_id; //二级类别id
-    private String g_name;  //商品名
-    private String g_detail;  //商品详情信息
-    private Double g_price;  //价格
-    private String g_status;  //下架状态
-    private Date g_create_time; //发布时间
+    @Column(name = "g_id")
+    private Integer gid; //商品id
+    @Column(name = "u_id")
+    private Integer uid;  //发布用户id
+    @Column(name = "ca2_id")
+    private Integer ca2id; //二级类别id
+    @Column(name = "g_name")
+    private String gname;  //商品名
+    @Column(name = "g_detail")
+    private String gdetail;  //商品详情信息
+    @Column(name = "g_price")
+    private Double gprice;  //价格
+    @Column(name = "g_status")
+    private String gstatus;  //下架状态
+    @Column(name = "g_create_time")
+    private Date gcreatetime; //发布时间
 
-    public Integer getG_id() {
-        return g_id;
+    public Goods() {
     }
 
-    public void setG_id(Integer g_id) {
-        this.g_id = g_id;
+    public Goods(Integer uid, Integer ca2id, String gname, String gdetail, Double gprice, String gstatus, Date gcreatetime) {
+        this.uid = uid;
+        this.ca2id = ca2id;
+        this.gname = gname;
+        this.gdetail = gdetail;
+        this.gprice = gprice;
+        this.gstatus = gstatus;
+        this.gcreatetime = gcreatetime;
     }
 
-    public Integer getU_id() {
-        return u_id;
+    public Integer getGid() {
+        return gid;
     }
 
-    public void setU_id(Integer u_id) {
-        this.u_id = u_id;
+    public void setGid(Integer gid) {
+        this.gid = gid;
     }
 
-    public Integer getCa2_id() {
-        return ca2_id;
+    public Integer getUid() {
+        return uid;
     }
 
-    public void setCa2_id(Integer ca2_id) {
-        this.ca2_id = ca2_id;
+    public void setUid(Integer uid) {
+        this.uid = uid;
     }
 
-    public String getG_name() {
-        return g_name;
+    public Integer getCa2id() {
+        return ca2id;
     }
 
-    public void setG_name(String g_name) {
-        this.g_name = g_name;
+    public void setCa2id(Integer ca2id) {
+        this.ca2id = ca2id;
     }
 
-    public String getG_detail() {
-        return g_detail;
+    public String getGname() {
+        return gname;
     }
 
-    public void setG_detail(String g_detail) {
-        this.g_detail = g_detail;
+    public void setGname(String gname) {
+        this.gname = gname;
     }
 
-    public Double getG_price() {
-        return g_price;
+    public String getGdetail() {
+        return gdetail;
     }
 
-    public void setG_price(Double g_price) {
-        this.g_price = g_price;
+    public void setGdetail(String gdetail) {
+        this.gdetail = gdetail;
     }
 
-    public String getG_status() {
-        return g_status;
+    public Double getGprice() {
+        return gprice;
     }
 
-    public void setG_status(String g_status) {
-        this.g_status = g_status;
+    public void setGprice(Double gprice) {
+        this.gprice = gprice;
     }
 
-    public Date getG_create_time() {
-        return g_create_time;
+    public String getGstatus() {
+        return gstatus;
     }
 
-    public void setG_create_time(Date g_create_time) {
-        this.g_create_time = g_create_time;
+    public void setGstatus(String gstatus) {
+        this.gstatus = gstatus;
+    }
+
+    public Date getGcreatetime() {
+        return gcreatetime;
+    }
+
+    public void setGcreatetime(Date gcreatetime) {
+        this.gcreatetime = gcreatetime;
+    }
+
+    @Override
+    public String toString() {
+        return "Goods{" +
+                "gid=" + gid +
+                ", uid=" + uid +
+                ", ca2id=" + ca2id +
+                ", gname='" + gname + '\'' +
+                ", gdetail='" + gdetail + '\'' +
+                ", gprice=" + gprice +
+                ", gstatus='" + gstatus + '\'' +
+                ", gcreatetime=" + gcreatetime +
+                '}';
     }
 }

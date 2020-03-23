@@ -3,7 +3,7 @@ package com.gomai.goods.pojo;
 import javax.persistence.*;
 @Entity
 @Table(name="goods_category1")
-public class Category1 { //一级类别
+public class Category1 { //一级类别表
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "ca1_id")
