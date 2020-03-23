@@ -8,62 +8,62 @@ public class Unshelve {//下架表
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "un_id")
-    private Integer unid; //下架商品id
+    private Integer unId; //下架商品id
     @Column(name = "g_id")
-    private Integer gid; //商品id
+    private Integer gId; //商品id
     @Column(name = "un_reason")
-    private String unreason; //下架原因
+    private String unReason; //下架原因
     @Column(name = "un_create_time")
-    private Date uncreatetime; //下架时间
+    private Date unCreateTime; //下架时间
 
     public Unshelve() {
     }
 
-    public Unshelve(Integer gid, String unreason, Date uncreatetime) {
-        this.gid = gid;
-        this.unreason = unreason;
-        this.uncreatetime = uncreatetime;
+    public Unshelve(Integer gId, String unReason, Date unCreateTime) {
+        this.gId = gId;
+        this.unReason = unReason;
+        this.unCreateTime = unCreateTime;
     }
 
-    public Integer getUnid() {
-        return unid;
+    public Integer getUnId() {
+        return unId;
     }
 
-    public void setUnid(Integer unid) {
-        this.unid = unid;
+    public void setUnId(Integer unId) {
+        this.unId = unId;
     }
 
-    public Integer getGid() {
-        return gid;
+    public Integer getgId() {
+        return gId;
     }
 
-    public void setGid(Integer gid) {
-        this.gid = gid;
+    public void setgId(Integer gId) {
+        this.gId = gId;
     }
 
-    public String getUnreason() {
-        return unreason;
+    public String getUnReason() {
+        return unReason;
     }
 
-    public void setUnreason(String unreason) {
-        this.unreason = unreason;
+    public void setUnReason(String unReason) {
+        this.unReason = unReason;
     }
 
-    public Date getUncreatetime() {
-        return uncreatetime;
+    public Date getUnCreateTime() {
+        return unCreateTime;
     }
 
-    public void setUncreatetime(Date uncreatetime) {
-        this.uncreatetime = uncreatetime;
+    public void setUnCreateTime(Date unCreateTime) {
+        this.unCreateTime = unCreateTime;
     }
 
     @Override
     public String toString() {
         return "Unshelve{" +
-                "unid=" + unid +
-                ", gid=" + gid +
-                ", unreason='" + unreason + '\'' +
-                ", uncreatetime=" + uncreatetime +
+                "unId=" + unId +
+                ", gId=" + gId +
+                ", unReason='" + unReason + '\'' +
+                ", unCreateTime=" + unCreateTime +
                 '}';
     }
 }
