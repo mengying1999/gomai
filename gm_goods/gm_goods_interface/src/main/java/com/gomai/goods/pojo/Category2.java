@@ -1,41 +1,56 @@
 package com.gomai.goods.pojo;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+
+@Entity
 @Table(name="goods_category2")
-public class Category2 {
+public class Category2 {//二级类别表
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer ca2_id; //二级类别id
-    private Integer ca1_id; //一级类别id
-    private String ca2_name; //二级类别名
+    @Column(name = "ca2_id")
+    private Integer ca2Id; //二级类别id
+    @Column(name = "ca1_id")
+    private Integer ca1Id; //一级类别id
+    @Column(name = "ca2_name")
+    private String ca2Name; //二级类别名
 
-    public Integer getCa2_id() {
-        return ca2_id;
+    public Category2() {
     }
 
-    public void setCa2_id(Integer ca2_id) {
-        this.ca2_id = ca2_id;
+    public Category2(Integer ca1Id, String ca2Name) {
+        this.ca1Id = ca1Id;
+        this.ca2Name = ca2Name;
     }
 
-    public Integer getCa1_id() {
-        return ca1_id;
+    public Integer getCa2Id() {
+        return ca2Id;
     }
 
-    public void setCa1_id(Integer ca1_id) {
-        this.ca1_id = ca1_id;
+    public void setCa2Id(Integer ca2Id) {
+        this.ca2Id = ca2Id;
     }
 
-    public String getCa2_name() {
-        return ca2_name;
+    public Integer getCa1Id() {
+        return ca1Id;
     }
 
-    public void setCa2_name(String ca2_name) {
-        this.ca2_name = ca2_name;
+    public void setCa1Id(Integer ca1Id) {
+        this.ca1Id = ca1Id;
     }
 
+    public String getCa2Name() {
+        return ca2Name;
+    }
 
+    public void setCa2Name(String ca2Name) {
+        this.ca2Name = ca2Name;
+    }
 
-
+    @Override
+    public String toString() {
+        return "Category2{" +
+                "ca2Id=" + ca2Id +
+                ", ca1Id=" + ca1Id +
+                ", ca2Name='" + ca2Name + '\'' +
+                '}';
+    }
 }
