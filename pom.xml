@@ -21,6 +21,7 @@
         <module>gm_feedback</module>
         <module>gm_registry</module>
         <module>gm_api_gateway</module>
+        <module>gm_upload</module>
     </modules>
     <packaging>pom</packaging>
 
