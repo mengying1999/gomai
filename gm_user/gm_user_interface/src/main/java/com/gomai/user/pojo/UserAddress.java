@@ -5,6 +5,7 @@ import javax.persistence.*;
 /**
  * 用户基本信息表
  */
+//用户地址
 @Entity
 @Table(name = "user_address")
 public class UserAddress {

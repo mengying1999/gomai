@@ -3,6 +3,7 @@ package com.gomai.comment.pojo;
 import javax.persistence.*;
 
 /**
+ *
  * 评论媒体表
  */
 @Entity

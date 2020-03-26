@@ -6,6 +6,7 @@ import java.util.Date;
 /**
  * 用户基本信息表
  */
+//用户表
 @Entity
 @Table(name = "user")
 public class User {
