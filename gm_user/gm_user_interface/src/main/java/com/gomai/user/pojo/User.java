@@ -27,7 +27,7 @@ public class User {
     @Column(name = "u_school")
     private String uSchool;  //学校
     @Column(name = "u_like")
-    private String uLlike;  //爱好
+    private String uLike;  //爱好
     @Column(name = "u_birthday")
     private Date uBirthday;  //生日
     @Column(name = "u_phone")
@@ -35,12 +35,12 @@ public class User {
     @Column(name = "u_auto_response")
     private String uAutoResponse; //自动回复
     @Column(name = "u_status")
-    private Boolean uAtatus;  // 登录状态
+    private Boolean uStatus;  // 登录状态
 
     public User() {
     }
 
-    public User(Integer uId, String uName, String uPassword, Boolean uSex, String uAvatar, String uIdentity, String uSchool, String uLlike, Date uBirthday, Integer uPhone, String uAutoResponse, Boolean uAtatus) {
+    public User(Integer uId, String uName, String uPassword, Boolean uSex, String uAvatar, String uIdentity, String uSchool, String uLike, Date uBirthday, Integer uPhone, String uAutoResponse, Boolean uStatus) {
         this.uId = uId;
         this.uName = uName;
         this.uPassword = uPassword;
@@ -48,11 +48,11 @@ public class User {
         this.uAvatar = uAvatar;
         this.uIdentity = uIdentity;
         this.uSchool = uSchool;
-        this.uLlike = uLlike;
+        this.uLike = uLike;
         this.uBirthday = uBirthday;
         this.uPhone = uPhone;
         this.uAutoResponse = uAutoResponse;
-        this.uAtatus = uAtatus;
+        this.uStatus = uStatus;
     }
 
     public Integer getuId() { return uId; }
@@ -83,9 +83,9 @@ public class User {
 
     public void setuSchool(String uSchool) { this.uSchool = uSchool; }
 
-    public String getuLlike() { return uLlike; }
+    public String getuLike() { return uLike; }
 
-    public void setuLlike(String uLlike) { this.uLlike = uLlike; }
+    public void setuLike(String uLlike) { this.uLike = uLlike; }
 
     public Date getuBirthday() { return uBirthday; }
 
@@ -99,12 +99,11 @@ public class User {
 
     public void setuAutoResponse(String uAutoResponse) { this.uAutoResponse = uAutoResponse; }
 
-    public Boolean getuAtatus() { return uAtatus; }
+    public Boolean getuAtatus() { return uStatus; }
 
-    public void setuAtatus(Boolean uAtatus) { this.uAtatus = uAtatus; }
+    public void setuStatus(Boolean uStatus) { this.uStatus = uStatus; }
 
     @Override
-
     public String toString() {
         return "User{" +
                 "uId=" + uId +
@@ -114,11 +113,11 @@ public class User {
                 ", uAvatar='" + uAvatar + '\'' +
                 ", uIdentity='" + uIdentity + '\'' +
                 ", uSchool='" + uSchool + '\'' +
-                ", uLlike='" + uLlike + '\'' +
+                ", uLike='" + uLike + '\'' +
                 ", uBirthday=" + uBirthday +
                 ", uPhone=" + uPhone +
                 ", uAutoResponse='" + uAutoResponse + '\'' +
-                ", uAtatus=" + uAtatus +
+                ", uStatus=" + uStatus +
                 '}';
     }
 }

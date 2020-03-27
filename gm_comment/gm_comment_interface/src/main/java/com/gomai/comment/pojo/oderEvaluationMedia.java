@@ -7,22 +7,21 @@ import javax.persistence.*;
  * 评论媒体表
  */
 @Entity
-@Table(name = "oder_evaluation_media")
-public class oder_evaluation_media {
+@Table(name = "oderEvaluationMedia")
+public class oderEvaluationMedia {
     @Id
     @GeneratedValue
     @Column(name = "oem_id")
     private Integer oemId; //主键
     @Column(name = "o_id")
-    private String oId; //用户id
+    private Integer oId; //用户id
     @Column(name = "oem_url")
     private String oemUrl;  //url
 
-    public oder_evaluation_media() {
+    public oderEvaluationMedia() {
     }
 
-    public oder_evaluation_media(Integer oemId, String oId, String oemUrl) {
-        this.oemId = oemId;
+    public oderEvaluationMedia(Integer oId, String oemUrl) {
         this.oId = oId;
         this.oemUrl = oemUrl;
     }
@@ -35,11 +34,11 @@ public class oder_evaluation_media {
         this.oemId = oemId;
     }
 
-    public String getoId() {
+    public Integer getoId() {
         return oId;
     }
 
-    public void setoId(String oId) {
+    public void setoId(Integer oId) {
         this.oId = oId;
     }
 
@@ -53,9 +52,9 @@ public class oder_evaluation_media {
 
     @Override
     public String toString() {
-        return "oder_evaluation_media{" +
+        return "oderEvaluationMedia{" +
                 "oemId=" + oemId +
-                ", oId='" + oId + '\'' +
+                ", oId=" + oId +
                 ", oemUrl='" + oemUrl + '\'' +
                 '}';
     }
