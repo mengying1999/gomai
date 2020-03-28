@@ -20,13 +20,13 @@ public class UserAddress {
     @Column(name = "ua_address")
     private String uaAddress; // 地址
     @Column(name = "ua_phone")
-    private Integer uaPhone;  // 电话号码
+    private String uaPhone;  // 电话号码
 
 
     public UserAddress() {
     }
 
-    public UserAddress(Integer uId, String uaSigner, String uaAddress, Integer uaPhone) {
+    public UserAddress(Integer uId, String uaSigner, String uaAddress, String uaPhone) {
         this.uId = uId;
         this.uaSigner = uaSigner;
         this.uaAddress = uaAddress;
@@ -65,11 +65,11 @@ public class UserAddress {
         this.uaAddress = uaAddress;
     }
 
-    public Integer getUaPhone() {
+    public String getUaPhone() {
         return uaPhone;
     }
 
-    public void setUaPhone(Integer uaPhone) {
+    public void setUaPhone(String uaPhone) {
         this.uaPhone = uaPhone;
     }
 

@@ -31,7 +31,7 @@ public class User {
     @Column(name = "u_birthday")
     private Date uBirthday;  //生日
     @Column(name = "u_phone")
-    private Integer uPhone; //电话号码
+    private String uPhone; //电话号码
     @Column(name = "u_auto_response")
     private String uAutoResponse; //自动回复
     @Column(name = "u_status")
@@ -40,7 +40,7 @@ public class User {
     public User() {
     }
 
-    public User(Integer uId, String uName, String uPassword, Boolean uSex, String uAvatar, String uIdentity, String uSchool, String uLike, Date uBirthday, Integer uPhone, String uAutoResponse, Boolean uStatus) {
+    public User(Integer uId, String uName, String uPassword, Boolean uSex, String uAvatar, String uIdentity, String uSchool, String uLike, Date uBirthday, String uPhone, String uAutoResponse, Boolean uStatus) {
         this.uId = uId;
         this.uName = uName;
         this.uPassword = uPassword;
@@ -91,17 +91,25 @@ public class User {
 
     public void setuBirthday(Date uBirthday) { this.uBirthday = uBirthday; }
 
-    public Integer getuPhone() { return uPhone; }
+    public String getuPhone() {
+        return uPhone;
+    }
 
-    public void setuPhone(Integer uPhone) { this.uPhone = uPhone; }
+    public void setuPhone(String uPhone) {
+        this.uPhone = uPhone;
+    }
 
     public String getuAutoResponse() { return uAutoResponse; }
 
     public void setuAutoResponse(String uAutoResponse) { this.uAutoResponse = uAutoResponse; }
 
-    public Boolean getuAtatus() { return uStatus; }
+    public Boolean getuStatus() {
+        return uStatus;
+    }
 
-    public void setuStatus(Boolean uStatus) { this.uStatus = uStatus; }
+    public void setuStatus(Boolean uStatus) {
+        this.uStatus = uStatus;
+    }
 
     @Override
     public String toString() {
