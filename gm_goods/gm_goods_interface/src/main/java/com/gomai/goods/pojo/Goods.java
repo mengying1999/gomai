@@ -21,14 +21,14 @@ public class Goods {//商品表
     @Column(name = "g_price")
     private Double gPrice;  //价格
     @Column(name = "g_status")
-    private String gStatus;  //下架状态
+    private Integer gStatus;  //下架状态
     @Column(name = "g_create_time")
     private Date gCreateTime; //发布时间
 
     public Goods() {
     }
 
-    public Goods(Integer uId, Integer ca2Id, String gName, String gDetail, Double gPrice, String gStatus, Date gCreateTime) {
+    public Goods(Integer uId, Integer ca2Id, String gName, String gDetail, Double gPrice, Integer gStatus, Date gCreateTime) {
         this.uId = uId;
         this.ca2Id = ca2Id;
         this.gName = gName;
@@ -86,11 +86,11 @@ public class Goods {//商品表
         this.gPrice = gPrice;
     }
 
-    public String getgStatus() {
+    public Integer getgStatus() {
         return gStatus;
     }
 
-    public void setgStatus(String gStatus) {
+    public void setgStatus(Integer gStatus) {
         this.gStatus = gStatus;
     }
 
@@ -111,7 +111,7 @@ public class Goods {//商品表
                 ", gName='" + gName + '\'' +
                 ", gDetail='" + gDetail + '\'' +
                 ", gPrice=" + gPrice +
-                ", gStatus='" + gStatus + '\'' +
+                ", gStatus=" + gStatus +
                 ", gCreateTime=" + gCreateTime +
                 '}';
     }
