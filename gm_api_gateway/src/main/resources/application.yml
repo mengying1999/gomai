@@ -24,6 +24,9 @@ zuul:
     feedback_service: /feedback/** #添加用户微服务的路由
     integral_service: /integral/** #添加用户微服务的路由
     order_service: /order/** #添加用户微服务的路由
+  ignored-patterns: /upload/**
+  ignored-services:
+    -upload_servie
 ribbon:
   ConnectTimeout: 250 # 连接超时时间(ms)
   ReadTimeout: 2000 # 通信超时时间(ms)
