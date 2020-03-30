@@ -10,7 +10,7 @@ import java.util.Date;
 @Table(name = "order_return")
 public class OrderReturn {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "or_id")
     private Integer orId; //退货退款id
     @Column(name = "o_id")

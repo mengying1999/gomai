@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Table(name = "order_return_media")
 public class OrderReturnMedia {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "orm_id")
     private Integer ormId; //退货退款媒体id
     @Column(name = "or_id")
