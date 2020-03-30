@@ -1,42 +1,29 @@
-package com.gomai.goods.pojo;
+package com.gomai.order.vo;
 
-import javax.persistence.*;
+import com.gomai.goods.pojo.Goods;
+import com.gomai.goods.pojo.GoodsMedia;
+
+import javax.persistence.Column;
 import java.util.Date;
-@Entity
-@Table(name="goods")
+import java.util.List;
 
-public class Goods {//商品表
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Column(name = "g_id")
-    private Integer gId; //商品id
-    @Column(name = "u_id")
+public class GoodsVo{
+//    Goods的所有媒体对象
+private Integer gId; //商品id
+
     private Integer uId;  //发布用户id
-    @Column(name = "ca2_id")
+
     private Integer ca2Id; //二级类别id
-    @Column(name = "g_name")
+
     private String gName;  //商品名
-    @Column(name = "g_detail")
+
     private String gDetail;  //商品详情信息
-    @Column(name = "g_price")
+
     private Double gPrice;  //价格
-    @Column(name = "g_status")
+
     private Integer gStatus;  //下架状态
-    @Column(name = "g_create_time")
     private Date gCreateTime; //发布时间
-
-    public Goods() {
-    }
-
-    public Goods(Integer uId, Integer ca2Id, String gName, String gDetail, Double gPrice, Integer gStatus, Date gCreateTime) {
-        this.uId = uId;
-        this.ca2Id = ca2Id;
-        this.gName = gName;
-        this.gDetail = gDetail;
-        this.gPrice = gPrice;
-        this.gStatus = gStatus;
-        this.gCreateTime = gCreateTime;
-    }
+    private List<GoodsMedia> goodsMedias;
 
     public Integer getgId() {
         return gId;
@@ -102,9 +89,17 @@ public class Goods {//商品表
         this.gCreateTime = gCreateTime;
     }
 
+    public List<GoodsMedia> getGoodsMedias() {
+        return goodsMedias;
+    }
+
+    public void setGoodsMedias(List<GoodsMedia> goodsMedias) {
+        this.goodsMedias = goodsMedias;
+    }
+
     @Override
     public String toString() {
-        return "Goods{" +
+        return "GoodsVo{" +
                 "gId=" + gId +
                 ", uId=" + uId +
                 ", ca2Id=" + ca2Id +
@@ -113,6 +108,7 @@ public class Goods {//商品表
                 ", gPrice=" + gPrice +
                 ", gStatus=" + gStatus +
                 ", gCreateTime=" + gCreateTime +
+                ", goodsMedias=" + goodsMedias +
                 '}';
     }
 }

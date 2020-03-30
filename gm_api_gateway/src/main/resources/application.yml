@@ -25,8 +25,8 @@ zuul:
     integral_service: /integral/** #添加用户微服务的路由
     order_service: /order/** #添加用户微服务的路由
 ribbon:
-  ConnectTimeout: 60000 # 连接超时时间(ms)
-  ReadTimeout: 60000 # 通信超时时间(ms)
+  ConnectTimeout: 250 # 连接超时时间(ms)
+  ReadTimeout: 2000 # 通信超时时间(ms)
   OkToRetryOnAllOperations: true # 是否对所有操作重试
   MaxAutoRetriesNextServer: 1 # 同一服务不同实例的重试次数
   MaxAutoRetries: 1 # 同一实例的重试次数
@@ -36,7 +36,7 @@ hystrix:
       execution:
         isolation:
           thread:
-            timeoutInMillisecond: 60000 # 熔断超时时长：10000ms
+            timeoutInMillisecond: 10000 # 熔断超时时长：10000ms
 #swagger 配置
 #通过网关获取服务地址
 swagger:

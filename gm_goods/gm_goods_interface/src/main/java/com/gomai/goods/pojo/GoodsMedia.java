@@ -7,62 +7,62 @@ public class GoodsMedia {//商品媒体表
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "gm_id")
-    private Integer gmid; //商品媒体id
+    private Integer gmId; //商品媒体id
     @Column(name = "g_id")
-    private Integer gid; //商品id
+    private Integer gId; //商品id
     @Column(name = "gm_url")
-    private String gmurl; //商品媒体地址
+    private String gmUrl; //商品媒体地址
     @Column(name = "gm_type")
-    private Integer gmtype; //商品媒体类别
+    private Integer gmType; //商品媒体类别
 
     public GoodsMedia() {
     }
 
-    public GoodsMedia(Integer gid, String gmurl, Integer gmtype) {
-        this.gid = gid;
-        this.gmurl = gmurl;
-        this.gmtype = gmtype;
+    public GoodsMedia(Integer gId, String gmUrl, Integer gmType) {
+        this.gId = gId;
+        this.gmUrl = gmUrl;
+        this.gmType = gmType;
     }
 
-    public Integer getGmid() {
-        return gmid;
+    public Integer getGmId() {
+        return gmId;
     }
 
-    public void setGmid(Integer gmid) {
-        this.gmid = gmid;
+    public void setGmId(Integer gmId) {
+        this.gmId = gmId;
     }
 
-    public Integer getGid() {
-        return gid;
+    public Integer getgId() {
+        return gId;
     }
 
-    public void setGid(Integer gid) {
-        this.gid = gid;
+    public void setgId(Integer gId) {
+        this.gId = gId;
     }
 
-    public String getGmurl() {
-        return gmurl;
+    public String getGmUrl() {
+        return gmUrl;
     }
 
-    public void setGmurl(String gmurl) {
-        this.gmurl = gmurl;
+    public void setGmUrl(String gmUrl) {
+        this.gmUrl = gmUrl;
     }
 
-    public Integer getGmtype() {
-        return gmtype;
+    public Integer getGmType() {
+        return gmType;
     }
 
-    public void setGmtype(Integer gmtype) {
-        this.gmtype = gmtype;
+    public void setGmType(Integer gmType) {
+        this.gmType = gmType;
     }
 
     @Override
     public String toString() {
         return "GoodsMedia{" +
-                "gmid=" + gmid +
-                ", gid=" + gid +
-                ", gmurl='" + gmurl + '\'' +
-                ", gmtype=" + gmtype +
+                "gmId=" + gmId +
+                ", gId=" + gId +
+                ", gmUrl='" + gmUrl + '\'' +
+                ", gmType=" + gmType +
                 '}';
     }
 }
