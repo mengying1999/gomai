@@ -16,4 +16,12 @@
         <module>gm_integral_service</module>
         <module>gm_integral_interface</module>
     </modules>
+    <!--jpa-->
+    <dependencies>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
 </project>

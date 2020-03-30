@@ -10,7 +10,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableSwaggerButler
-@MapperScan("com.gomai.feedback.mapper")
+@MapperScan("com.gomai.Feedback.mapper")
 public class GmFeedbackService {
     public static void main(String[] args) {
         SpringApplication.run(GmFeedbackService.class,args);
