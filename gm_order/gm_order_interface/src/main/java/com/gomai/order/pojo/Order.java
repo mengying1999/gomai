@@ -10,7 +10,7 @@ import java.util.Date;
 @Table(name = "order_form")
 public class Order {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "o_id")
     private Integer oId; //主键
     @Column(name = "u_id")
