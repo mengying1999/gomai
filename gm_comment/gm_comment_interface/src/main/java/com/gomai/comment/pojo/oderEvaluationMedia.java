@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Table(name = "oderEvaluationMedia")
 public class oderEvaluationMedia {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "oem_id")
     private Integer oemId; //主键
     @Column(name = "o_id")
