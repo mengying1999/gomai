@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Table(name = "orderComment")
 public class orderComment {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "oc_id")
     private Integer ocId; //主键
     @Column(name = "o_id")

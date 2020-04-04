@@ -11,7 +11,7 @@ import java.util.Date;
 @Table(name = "user")
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "u_id")
     private Integer uId; //主键
     @Column(name = "u_name")
