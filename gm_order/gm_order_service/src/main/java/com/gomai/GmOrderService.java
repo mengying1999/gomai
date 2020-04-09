@@ -15,6 +15,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @Transactional
 @SpringBootApplication
 public class GmOrderService {
+
     public static void main(String[] args) {
         SpringApplication.run(GmOrderService.class,args);
     }

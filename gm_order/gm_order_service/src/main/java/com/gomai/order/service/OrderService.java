@@ -11,5 +11,7 @@ public interface OrderService {
 
     public int addOrder(Order order);
 
+    public Order queryOrderByOId(Integer oId);
 
+    public int updateOrder(Order order);
 }

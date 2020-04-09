@@ -28,4 +28,18 @@ public class OrderServiceImpl implements OrderService {
        int flag =  orderMapper.insert(order);
         return flag;
     }
+
+    @Override
+    public Order queryOrderByOId(Integer oId) {
+        System.out.println(oId);
+        Order order = orderMapper.selectByPrimaryKey(oId);
+        System.out.println(order);
+        return order;
+    }
+
+    @Override
+    public int updateOrder(Order order) {
+        int flag = orderMapper.updateByPrimaryKey(order);
+        return flag;
+    }
 }

@@ -16,6 +16,7 @@ public class OGoodsServiceImpl implements OGoodsService {
 
     @Autowired
     private OGoodsMapper oGoodsMapper;
+    
     @Override
     public GoodsVo queryGoodsVoByGId(Integer gId) {
         GoodsVo goodsVos = this.oGoodsMapper.selectGoodsVoByGId(gId);
