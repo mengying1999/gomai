@@ -2,6 +2,7 @@ package com.gomai.order.vo;
 
 import com.gomai.goods.pojo.Goods;
 import com.gomai.goods.pojo.GoodsMedia;
+import com.gomai.user.pojo.User;
 
 import javax.persistence.Column;
 import java.util.Date;
@@ -11,7 +12,7 @@ public class GoodsVo{
 //    Goods的所有媒体对象
 private Integer gId; //商品id
 
-    private Integer uId;  //发布用户id
+    private User user;  //发布用户
 
     private Integer ca2Id; //二级类别id
 
@@ -33,12 +34,12 @@ private Integer gId; //商品id
         this.gId = gId;
     }
 
-    public Integer getuId() {
-        return uId;
+    public User getUser() {
+        return user;
     }
 
-    public void setuId(Integer uId) {
-        this.uId = uId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Integer getCa2Id() {
@@ -101,7 +102,7 @@ private Integer gId; //商品id
     public String toString() {
         return "GoodsVo{" +
                 "gId=" + gId +
-                ", uId=" + uId +
+                ", user=" + user +
                 ", ca2Id=" + ca2Id +
                 ", gName='" + gName + '\'' +
                 ", gDetail='" + gDetail + '\'' +

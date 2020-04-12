@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gomai.order.mapper.OrderMapper">
+    <!-- -->
+    <!--
+        根据订单的状态进行动态sql查询
+    -->
+    <resultMap type="com.gomai.order.vo.OrderVo" id="orderVo">
+        <id property="oId" column="o_id"></id>
+        <result property="oStatus" column="o_status"></result>
+        <result property="oCancelType" column="o_cancel_type"></result>
+        <result property="oEvaluation" column="o_evaluation"></result>
+        <result property="oEvaluationAdd" column="o_evaluation_add"></result>
+        <result property="oCancelReason" column="o_cancel_reason"></result>
+        <result property="oCreateTime" column="o_create_time"></result>
+        <result property="oPayTime" column="o_pay_time"></result>
+        <result property="oRemindShipments" column="o_remind_shipments"></result>
+        <result property="oShipmentsTime" column="o_shipments_time"></result>
+        <result property="oRemindReceive" column="o_remind_receive"></result>
+        <result property="oReceiveTime" column="o_receive_time"></result>
+        <result property="oEvaluationTime" column="o_evaluation_time"></result>
+        <result property="oEvaluationAddTime" column="o_evaluation_add_time"></result>
+        <result property="oSellDelete" column="o_sell_delete"></result>
+        <result property="oBuyDelete" column="o_buy_delete"></result>
+        <association property="user" column="u_id" select="com.gomai.order.mapper.OUserMapper.selectByPrimaryKey"></association>
+        <association property="goodsVo" column="g_id" select="com.gomai.order.mapper.OGoodsMapper.selectGoodsVoByGId"></association>
+        <association property="userAddress" column="ua_id" select="com.gomai.order.mapper.OAddressMapper.selectByPrimaryKey"></association>
+    </resultMap>
+    <select id="selectOrderVoByOthers" resultMap="com.gomai.order.mapper.OrderMapper.orderVo">
+        select * from order_form
+        <where>
+            <if test="oId!=null and oId!='' and oId!= 0">
+                and o_id=#{oId}
+            </if>
+            <if test="uId!=null and uId!='' and uId!= 0">
+                and u_id=#{uId}
+            </if>
+            <if test="gId!=null and gId!='' and gId!= 0">
+                and g_id=#{gId}
+            </if>
+            <if test="uaId!=null and uaId!='' and uaId!= 0">
+                and ua_id=#{uaId}
+            </if>
+            <if test="oStatus!=null and oStatus!='' and oStatus!= 0">
+                and o_status=#{oStatus}
+            </if>
+
+        </where>
+        order by o_create_time desc
+    </select>
+
+    <select id="selectOrderVoBySaleUId" resultMap="com.gomai.order.mapper.OrderMapper.orderVo">
+        select order_form.* from order_form, goods
+        <where>
+            <if test="0 == 0">
+                and goods.u_id=#{goodsVo.user.uId}
+            </if>
+            <if test="0 == 0">
+                and goods.g_id = order_form.g_id
+            </if>
+            <if test="oId != null and oId != '' and oId != 0">
+                and o_id=#{oId}
+            </if>
+            <!--<if test="user != null and user != ''                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ">-->
+                <!--<if test="user.uId != null and user.uId != '' and user.uId != 0">-->
+                    <!--and u_id=#{user.uId}-->
+                <!--</if>-->
+            <!--</if>-->
+            <!--<if test="goodsVo.gId != null and goodsVo.gId != '' and goodsVo.gId != 0">-->
+                <!--and g_id=#{goodsVo.gId}-->
+            <!--</if>-->
+            <!--<if test="userAddress.uaId != null and userAddress.uaId != '' and userAddress.uaId != 0">-->
+                <!--and ua_id=#{userAddress.uaId}-->
+            <!--</if>-->
+            <if test="oStatus != null and oStatus != '' and oStatus != 0">
+                and o_status=#{oStatus}
+            </if>
+
+        </where>
+        order by o_create_time desc
+    </select>
+
+</mapper>

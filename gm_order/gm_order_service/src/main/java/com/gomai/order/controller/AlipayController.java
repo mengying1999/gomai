@@ -1,6 +1,7 @@
 package com.gomai.order.controller;
 
 import com.gomai.order.delay.DelayService;
+import com.gomai.order.delay.DshOrder;
 import com.gomai.order.pojo.Order;
 import com.gomai.order.service.OrderService;
 import com.gomai.utils.SbException;
@@ -17,12 +18,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Date;
+
 @Controller
 @RequestMapping("/alipay")
 public class AlipayController {
     private Log log = LogFactory.getLog(DelayService.class);
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private DelayService delayService;
     @ApiOperation("支付异步通知接口")
     @GetMapping("/notify_url")
     public String notifyAlipay() {
@@ -54,10 +59,15 @@ public class AlipayController {
             throw new SbException(100, "订单状态错误！");
         }
         order.setoStatus(2);//将状态改为未发货
+        Date date = new Date();
+        System.out.println(date);
+        order.setoPayTime(date);//设置付款时间
         int flag = orderService.updateOrder(order);
         if (flag == 0){
             throw new SbException(100, "状态更改失败！");
         }
+        DshOrder dshOrder = new DshOrder(""+order.getoId(),1 * 1000,2);
+        delayService.add(dshOrder);
         ModelAndView modelAndView = new ModelAndView("redirect:http://www.gomai.com/buyOrder");
         return modelAndView;
     }

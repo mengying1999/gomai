@@ -66,6 +66,30 @@ public class DelayService {
                                    }
                                }
                         }
+                        if(order.getType() == 2){   //如果是类型为2，未发货订单，取消订单
+                            log.info(order.getOrderNo());
+                            log.info(Integer.parseInt(order.getOrderNo()));
+                            Order myOrder =  orderService.queryOrderByOId(Integer.parseInt(order.getOrderNo()));
+                            if (!StringUtils.isEmpty(myOrder)){
+                                log.info(myOrder);
+                                if (myOrder.getoStatus() == 2){  //还为待发货
+                                    //取消订单
+                                    log.info("*********未在规定时间内付款取消订单*******");
+                                }
+                            }
+                        }
+                        if(order.getType() == 3){   //如果是类型为3，未收货订单，确认收货
+                            log.info(order.getOrderNo());
+                            log.info(Integer.parseInt(order.getOrderNo()));
+                            Order myOrder =  orderService.queryOrderByOId(Integer.parseInt(order.getOrderNo()));
+                            if (!StringUtils.isEmpty(myOrder)){
+                                log.info(myOrder);
+                                if (myOrder.getoStatus() == 3){  //还为待收货
+                                    //取消订单
+                                    log.info("*********未在规定时间内收货，自动确认收货*******");
+                                }
+                            }
+                        }
                         if (DelayService.this.listener != null) {
                             DelayService.this.listener.onDelayedArrived(order);
                         }
