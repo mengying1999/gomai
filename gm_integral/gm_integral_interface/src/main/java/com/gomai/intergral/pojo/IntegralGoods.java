@@ -19,15 +19,18 @@ public class IntegralGoods {
     private String igName; //积分商品名
     @Column(name="ig_describe")
     private String igDescribe; //积分商品描述
+    @Column(name="ig_img")
+    private String igImg; //url
     public IntegralGoods() {
     }
 
-    public IntegralGoods( String igType, Integer igIntegral, Integer igStore, String igName, String igDescribe) {
+    public IntegralGoods(String igType, Integer igIntegral, Integer igStore, String igName, String igDescribe, String igImg) {
         this.igType = igType;
         this.igIntegral = igIntegral;
         this.igStore = igStore;
         this.igName = igName;
         this.igDescribe = igDescribe;
+        this.igImg = igImg;
     }
 
     public Integer getIgId() {
@@ -78,6 +81,14 @@ public class IntegralGoods {
         this.igDescribe = igDescribe;
     }
 
+    public String getIgImg() {
+        return igImg;
+    }
+
+    public void setIgImg(String igImg) {
+        this.igImg = igImg;
+    }
+
     @Override
     public String toString() {
         return "IntegralGoods{" +
@@ -87,6 +98,7 @@ public class IntegralGoods {
                 ", igStore=" + igStore +
                 ", igName='" + igName + '\'' +
                 ", igDescribe='" + igDescribe + '\'' +
+                ", igImg='" + igImg + '\'' +
                 '}';
     }
 }

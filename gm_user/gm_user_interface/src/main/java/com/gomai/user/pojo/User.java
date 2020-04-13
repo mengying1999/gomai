@@ -36,12 +36,13 @@ public class User {
     private String uAutoResponse; //自动回复
     @Column(name = "u_status")
     private Boolean uStatus;  // 登录状态
+    @Column(name = "u_total_integral")
+    private Boolean uTotalIntegral;  // 登录状态
 
     public User() {
     }
 
-    public User(Integer uId, String uName, String uPassword, Boolean uSex, String uAvatar, String uIdentity, String uSchool, String uLike, Date uBirthday, String uPhone, String uAutoResponse, Boolean uStatus) {
-        this.uId = uId;
+    public User(String uName, String uPassword, Boolean uSex, String uAvatar, String uIdentity, String uSchool, String uLike, Date uBirthday, String uPhone, String uAutoResponse, Boolean uStatus, Boolean uTotalIntegral) {
         this.uName = uName;
         this.uPassword = uPassword;
         this.uSex = uSex;
@@ -53,6 +54,7 @@ public class User {
         this.uPhone = uPhone;
         this.uAutoResponse = uAutoResponse;
         this.uStatus = uStatus;
+        this.uTotalIntegral = uTotalIntegral;
     }
 
     public Integer getuId() { return uId; }
@@ -111,6 +113,14 @@ public class User {
         this.uStatus = uStatus;
     }
 
+    public Boolean getuTotalIntegral() {
+        return uTotalIntegral;
+    }
+
+    public void setuTotalIntegral(Boolean uTotalIntegral) {
+        this.uTotalIntegral = uTotalIntegral;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -123,9 +133,10 @@ public class User {
                 ", uSchool='" + uSchool + '\'' +
                 ", uLike='" + uLike + '\'' +
                 ", uBirthday=" + uBirthday +
-                ", uPhone=" + uPhone +
+                ", uPhone='" + uPhone + '\'' +
                 ", uAutoResponse='" + uAutoResponse + '\'' +
                 ", uStatus=" + uStatus +
+                ", uTotalIntegral=" + uTotalIntegral +
                 '}';
     }
 }

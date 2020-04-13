@@ -1,41 +1,42 @@
-package com.gomai.intergral.pojo;
-import javax.persistence.*;
-import java.util.Date;
-@Entity
-@Table(name = "integral_exchange")
-public class IntegralExchange {
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "ie_id")
-    private Integer ieId; //主键
-    @Column(name = "ig_id")
-    private Integer igId; //积分商品id
-    @Column(name = "g_id")
-    private Integer gId; //商品id
-    @Column(name = "u_id")
-    private Integer uId; //用户id
-    @Column(name = "ie_create_time")
-    private Date ieCreateTime; //兑换的时间
-    @Column(name = "ie_change_integral")
-    private Integer ieChangeIntegral; //改变的积分
-    @Column(name = "ie_type")
-    private Integer ieType; //个人总积分
-    public IntegralExchange() { }
+package com.gomai.integral.vo;
 
-    public IntegralExchange(Integer gId, Integer uId, Date ieCreateTime, Integer ieChangeIntegral,Integer ieType) {
+import com.gomai.goods.pojo.Goods;
+import com.gomai.intergral.pojo.IntegralGoods;
+
+import java.util.Date;
+
+public class IGoodsVo {
+    private Integer ieId; //主键
+
+    private Integer igId; //积分商品id
+
+    private Integer gId; //商品id
+
+    private Integer uId; //用户id
+
+    private Date ieCreateTime; //兑换的时间
+
+    private Integer ieChangeIntegral; //改变的积分
+
+    private Integer ieTotalIntegral; //个人总积分
+
+    private Integer ieType; //个人总积分
+
+    private  Goods goods;
+
+    private IntegralGoods integralGoods;
+
+    public IGoodsVo(Integer ieId, Integer igId, Integer gId, Integer uId, Date ieCreateTime, Integer ieChangeIntegral, Integer ieTotalIntegral, Integer ieType, Goods goods, IntegralGoods integralGoods) {
+        this.ieId = ieId;
+        this.igId = igId;
         this.gId = gId;
         this.uId = uId;
         this.ieCreateTime = ieCreateTime;
         this.ieChangeIntegral = ieChangeIntegral;
+        this.ieTotalIntegral = ieTotalIntegral;
         this.ieType = ieType;
-    }
-
-    public Integer getIeType() {
-        return ieType;
-    }
-
-    public void setIeType(Integer ieType) {
-        this.ieType = ieType;
+        this.goods = goods;
+        this.integralGoods = integralGoods;
     }
 
     public Integer getIeId() {
@@ -86,17 +87,51 @@ public class IntegralExchange {
         this.ieChangeIntegral = ieChangeIntegral;
     }
 
+    public Integer getIeTotalIntegral() {
+        return ieTotalIntegral;
+    }
+
+    public void setIeTotalIntegral(Integer ieTotalIntegral) {
+        this.ieTotalIntegral = ieTotalIntegral;
+    }
+
+    public Integer getIeType() {
+        return ieType;
+    }
+
+    public void setIeType(Integer ieType) {
+        this.ieType = ieType;
+    }
+
+    public IntegralGoods getIntegralGoods() {
+        return integralGoods;
+    }
+
+    public void setIntegralGoods(IntegralGoods integralGoods) {
+        this.integralGoods = integralGoods;
+    }
+
+    public Goods getGoods() {
+        return goods;
+    }
+
+    public void setGoods(Goods goods) {
+        this.goods = goods;
+    }
 
     @Override
     public String toString() {
-        return "IntegralExchange{" +
+        return "IGoodsVo{" +
                 "ieId=" + ieId +
                 ", igId=" + igId +
                 ", gId=" + gId +
                 ", uId=" + uId +
                 ", ieCreateTime=" + ieCreateTime +
                 ", ieChangeIntegral=" + ieChangeIntegral +
+                ", ieTotalIntegral=" + ieTotalIntegral +
                 ", ieType=" + ieType +
+                ", goods=" + goods +
+                ", integralGoods=" + integralGoods +
                 '}';
     }
 }
