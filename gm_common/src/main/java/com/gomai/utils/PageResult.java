@@ -5,15 +5,13 @@ import java.util.List;
 public class PageResult  <T> {
     private long total;  //总数
     private List<T> rows; // 查询结果
-    private Long totalPage;// 总页数
 
     public PageResult() {
     }
 
-    public PageResult(long total, List<T> rows, Long totalPage) {
+    public PageResult(long total, List<T> rows) {
         this.total = total;
         this.rows = rows;
-        this.totalPage = totalPage;
     }
 
     public long getTotal() {
@@ -32,20 +30,11 @@ public class PageResult  <T> {
         this.rows = rows;
     }
 
-    public Long getTotalPage() {
-        return totalPage;
-    }
-
-    public void setTotalPage(Long totalPage) {
-        this.totalPage = totalPage;
-    }
-
     @Override
     public String toString() {
         return "PageResult{" +
                 "total=" + total +
                 ", rows=" + rows +
-                ", totalPage=" + totalPage +
                 '}';
     }
 }
