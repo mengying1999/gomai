@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface IGoodsService {
 
-    public List<IntegralGoods> SelectByigId(int igId);
+    public IntegralGoods SelectByigId(int igId);
 
 
+    List<IntegralGoods> selecetByigType(String igType);
 }

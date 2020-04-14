@@ -4,6 +4,8 @@ import com.gomai.integral.service.IEUserService;
 import com.gomai.integral.service.IExchangeService;
 import com.gomai.integral.vo.GoodsVo;
 import com.gomai.integral.vo.IChangeVo;
+import com.gomai.intergral.pojo.IntegralExchange;
+import com.gomai.intergral.pojo.IntegralGoods;
 import com.gomai.user.pojo.User;
 import com.gomai.utils.ReturnMessage;
 import com.gomai.utils.ReturnMessageUtil;
@@ -56,5 +58,44 @@ public class IEchangeController {
         }
         List<IChangeVo> iChangeVos=iExchangeService.selectIChangeVoByTypes(uid,types);
             return  ReturnMessageUtil.sucess(iChangeVos);
+    }
+
+    /**
+     *
+     * 1.判断ieId是否为空
+     * 2.判断是否存在该积分明细
+     * 3.执行删除
+     * 4.返回
+     */
+    @GetMapping("/deleteByieId/{ieId}")
+    public ReturnMessage<Object> deleteByieId(Integer ieId ) {
+        if(StringUtils.isEmpty(ieId)||ieId<0){
+            throw  new  SbException(100,"非法字符");
+        }
+        IntegralExchange ie=this.iExchangeService.selectByieId(ieId);
+        if (StringUtils.isEmpty(ie)){
+            throw  new SbException(400,"不存在该积分明细");
+        }
+        int flag=this.iExchangeService.deleteByieId(ieId);
+        if(flag==0){
+            throw  new SbException(400,"删除失败");
+        }
+        return ReturnMessageUtil.sucess(true);
+    }
+    @GetMapping("/deleteByuId/{uId}")
+    public ReturnMessage<Object> deleteByuId(Integer uId ) {
+        if(StringUtils.isEmpty(uId)||uId<0){
+            throw  new  SbException(100,"非法字符");
+        }
+        User user=this.iEUserService.selectUserByUid(uId);
+        if (StringUtils.isEmpty(user)){
+            throw  new SbException(400,"不存在该积分明细");
+        }
+
+        int flag=this.iEUserService.deleteByuId(uId);
+        if(flag==0){
+            throw  new SbException(400,"删除失败");
+        }
+        return ReturnMessageUtil.sucess(true);
     }
 }

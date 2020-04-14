@@ -15,4 +15,12 @@ public class IEUserServiceImpl implements IEUserService {
         User user=iEUserMapper.selectByPrimaryKey(uId);
         return user;
     }
+
+    @Override
+    public int deleteByuId(Integer uId) {
+        User user=new User();
+        user.setuId(uId);
+        int flag=this.iEUserMapper.delete(user);
+        return 0;
+    }
 }
