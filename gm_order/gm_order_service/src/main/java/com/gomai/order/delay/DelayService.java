@@ -1,9 +1,21 @@
 package com.gomai.order.delay;
 
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.DelayQueue;
 
+import com.alipay.api.AlipayClient;
+import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.request.AlipayTradeRefundRequest;
+import com.alipay.api.response.AlipayTradeRefundResponse;
+import com.gomai.order.config.AlipayConfig;
 import com.gomai.order.pojo.Order;
+import com.gomai.order.pojo.OrderReturn;
+import com.gomai.order.service.OExchangeService;
+import com.gomai.order.service.OrderReturnService;
 import com.gomai.order.service.OrderService;
+import com.gomai.order.vo.OrderVo;
+import com.gomai.utils.SbException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +43,12 @@ public class DelayService {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private DelayService delayService;
+    @Autowired
+    private OExchangeService oExchangeService;
+    @Autowired
+    private OrderReturnService orderReturnService;
     public static interface OnDelayedListener{
         public void onDelayedArrived(DshOrder order);
     }
@@ -62,7 +80,13 @@ public class DelayService {
                                    log.info(myOrder);
                                    if (myOrder.getoStatus() == 1){  //还为待付款
                                        //取消订单
-                                       log.info("*********取消订单*******");
+                                       myOrder.setoStatus(6);
+                                       myOrder.setoCancelType(1);
+                                       int flag = orderService.updateOrder(myOrder);
+                                       if (flag == 0){
+                                           throw new SbException(100, "取消订单失败!");
+                                       }
+                                       log.info("*********未在规定时间内付款取消订单*******");
                                    }
                                }
                         }
@@ -74,7 +98,14 @@ public class DelayService {
                                 log.info(myOrder);
                                 if (myOrder.getoStatus() == 2){  //还为待发货
                                     //取消订单
-                                    log.info("*********未在规定时间内付款取消订单*******");
+                                    myOrder.setoStatus(6);
+                                    myOrder.setoCancelType(4);
+                                    int flag = orderService.updateOrder(myOrder);
+                                    if (flag == 0){
+                                        throw new SbException(100, "取消订单失败!");
+                                    }
+                                    alipayReturn(myOrder.getoId());
+                                    log.info("*********未在规定时间内发货取消订单*******");
                                 }
                             }
                         }
@@ -85,10 +116,90 @@ public class DelayService {
                             if (!StringUtils.isEmpty(myOrder)){
                                 log.info(myOrder);
                                 if (myOrder.getoStatus() == 3){  //还为待收货
-                                    //取消订单
+                                    //确认收货
                                     log.info("*********未在规定时间内收货，自动确认收货*******");
+                                    myOrder.setoStatus(4);
+                                    myOrder.setoReceiveTime(new Date());
+                                    int flag = orderService.updateOrder(myOrder);
+                                    if (flag == 0){
+                                        throw new SbException(100, "更新错误!");
+                                    }
+                                    //生成积分明细
+                                    flag = oExchangeService.addIntegralExchange(myOrder.getoId());
+                                    if (flag == 0){
+                                        throw new SbException(100, "更新错误!");
+                                    }
+                                    //创建定时器（即15天未评价则将订单改为已评价，评价为默认评价）
+                                    DshOrder dshOrder = new DshOrder(""+myOrder.getoId(),60 * 60 * 1000,4);
+                                    delayService.add(dshOrder);
                                 }
                             }
+                        }
+                        if(order.getType() == 4){   //如果是类型为4，未评价订单，系统默认评价
+                            log.info(order.getOrderNo());
+                            log.info(Integer.parseInt(order.getOrderNo()));
+                            Order myOrder =  orderService.queryOrderByOId(Integer.parseInt(order.getOrderNo()));
+                            if (!StringUtils.isEmpty(myOrder)){
+                                log.info(myOrder);
+                                if (myOrder.getoStatus() == 4){  //还为未评价
+                                    //评价
+                                    log.info("*********未在规定时间内评价，自动评价*******");
+                                    myOrder.setoStatus(5);
+                                    myOrder.setoEvaluation("系统自动评价");
+                                    myOrder.setoEvaluationTime(new Date());
+                                    int flag = orderService.updateOrder(myOrder);
+                                    if (flag == 0){
+                                        throw new SbException(100, "更新错误!");
+                                    }
+                                }
+                            }
+                        }
+                        if(order.getType() == 5) {   //如果是类型为5，未及时处理退货退款申请,则系统自动同意退款
+                           Integer orId = Integer.parseInt(order.getOrderNo());
+                           OrderReturn orderReturn = orderReturnService.queryOrderReturnById(orId);
+                            if (!StringUtils.isEmpty(orderReturn)) {
+                                if (orderReturn.getOrStatus() == 1) {
+                                    alipayReturn(orderReturn.getoId());
+                                    //更改退货退款状态
+                                    orderReturn.setOrStatus(2);
+                                    int flag = orderReturnService.updateReturnService(orderReturn);
+                                    if (flag == 0) {
+                                        throw new SbException(100, "退款失败");
+                                    }
+                                    flag = oExchangeService.reduceIntegralExchange(orderReturn.getoId());
+                                    if (flag == 0){
+                                        throw new SbException(100, "退款失败");
+                                    }
+                                }
+                            }
+                        }
+                        if(order.getType() == 6) {   //如果是类型为6，未及时撤销退款请求,则系统自动撤销
+                            Integer orId = Integer.parseInt(order.getOrderNo());
+                            OrderReturn orderReturn = orderReturnService.queryOrderReturnById(orId);
+                            if (!StringUtils.isEmpty(orderReturn)) {
+                                if (orderReturn.getOrStatus() == 3) {
+                            if (StringUtils.isEmpty(orderReturn)) {
+                                throw new SbException(100, "参数错误!");
+                            }
+                            orderReturn.setOrStatus(4);
+                            int flag = orderReturnService.updateReturnService(orderReturn);
+                            if (flag == 0){
+                                throw new SbException(100, "撤销失败");
+                            }
+                            Order order1 = orderService.queryOrderByOId(orderReturn.getoId());
+                            if (StringUtils.isEmpty(order1)){
+                                throw new SbException(100, "撤销失败");
+                            }
+                            if (order1.getoStatus() == 7){
+                                order1.setoStatus(3);
+                            }
+                            if (order1.getoStatus() == 8){
+                                order1.setoStatus(4);
+                            }
+                            flag = orderService.updateOrder(order1);
+                            if (flag == 0){
+                                throw new SbException(100, "撤销失败");
+                            }}}
                         }
                         if (DelayService.this.listener != null) {
                             DelayService.this.listener.onDelayedArrived(order);
@@ -145,6 +256,38 @@ public class DelayService {
         }
         if(target != null){
             this.remove(target);
+        }
+    }
+    public void  alipayReturn(Integer oId)throws Exception{
+        AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.gatewayUrl, AlipayConfig.app_id, AlipayConfig.merchant_private_key, "json", AlipayConfig.charset, AlipayConfig.alipay_public_key, AlipayConfig.sign_type);
+        //设置请求参数
+        AlipayTradeRefundRequest alipayRequest = new AlipayTradeRefundRequest();
+        Order temp = new Order();
+        temp.setoId(oId);
+        List<OrderVo> orderVos = orderService.queryOrderVoByOthers(temp);
+        //商户订单号，商户网站订单系统中唯一订单号
+        String out_trade_no = "" + oId;
+        //支付宝交易号
+        String trade_no = orderVos.get(0).getoTradeNo();
+        //请二选一设置
+        //需要退款的金额，该金额不能大于订单金额，必填
+        String refund_amount = ""+ orderVos.get(0).getGoodsVo().getgPrice();
+        //退款的原因说明
+        String refund_reason = "";
+        //标识一次退款请求，同一笔交易多次退款需要保证唯一，如需部分退款，则此参数必传
+        String out_request_no = "";
+//
+        alipayRequest.setBizContent("{\"out_trade_no\":\""+ out_trade_no +"\","
+                + "\"trade_no\":\""+ trade_no +"\","
+                + "\"refund_amount\":\""+ refund_amount +"\","
+                + "\"refund_reason\":\""+ refund_reason +"\","
+                + "\"out_request_no\":\""+ out_request_no +"\"}");
+
+        //请求
+        AlipayTradeRefundResponse response;
+        response = alipayClient.execute(alipayRequest);
+        if (!response.isSuccess()) {
+            throw new SbException(100, "退款失败");
         }
     }
 }

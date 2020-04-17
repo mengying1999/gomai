@@ -29,7 +29,7 @@ public class OrderVo {
     private Date oEvaluationAddTime;  //追加评价时间
     private Integer oSellDelete; // 卖家是否删除
     private Integer oBuyDelete; //买家是否删除
-
+    private String oTradeNo;//支付宝宝交易号
 
     public Integer getoId() {
         return oId;
@@ -181,5 +181,39 @@ public class OrderVo {
 
     public void setoBuyDelete(Integer oBuyDelete) {
         this.oBuyDelete = oBuyDelete;
+    }
+
+    public String getoTradeNo() {
+        return oTradeNo;
+    }
+
+    public void setoTradeNo(String oTradeNo) {
+        this.oTradeNo = oTradeNo;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderVo{" +
+                "oId=" + oId +
+                ", user=" + user +
+                ", goodsVo=" + goodsVo +
+                ", userAddress=" + userAddress +
+                ", oStatus=" + oStatus +
+                ", oCancelType=" + oCancelType +
+                ", oEvaluation='" + oEvaluation + '\'' +
+                ", oEvaluationAdd='" + oEvaluationAdd + '\'' +
+                ", oCancelReason='" + oCancelReason + '\'' +
+                ", oCreateTime=" + oCreateTime +
+                ", oPayTime=" + oPayTime +
+                ", oRemindShipments=" + oRemindShipments +
+                ", oShipmentsTime=" + oShipmentsTime +
+                ", oRemindReceive=" + oRemindReceive +
+                ", oReceiveTime=" + oReceiveTime +
+                ", oEvaluationTime=" + oEvaluationTime +
+                ", oEvaluationAddTime=" + oEvaluationAddTime +
+                ", oSellDelete=" + oSellDelete +
+                ", oBuyDelete=" + oBuyDelete +
+                ", oTradeNo='" + oTradeNo + '\'' +
+                '}';
     }
 }

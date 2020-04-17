@@ -49,11 +49,12 @@ public class Order {
     private Integer oSellDelete; // 卖家是否删除
     @Column(name = "o_buy_delete")
     private Integer oBuyDelete; //买家是否删除
-
+    @Column(name = "o_trade_no")
+    private String oTradeNo;//支付宝宝交易号
     public Order() {
     }
 
-    public Order(Integer uId, Integer gId, Integer uaId, Integer oStatus, Integer oCancelType, String oEvaluation, String oEvaluationAdd, String oCancelReason, Date oCreateTime, Date oPayTime, Date oRemindShipments, Date oShipmentsTime, Date oRemindReceive, Date oReceiveTime, Date oEvaluationTime, Date oEvaluationAddTime, Integer oSellDelete, Integer oBuyDelete) {
+    public Order(Integer uId, Integer gId, Integer uaId, Integer oStatus, Integer oCancelType, String oEvaluation, String oEvaluationAdd, String oCancelReason, Date oCreateTime, Date oPayTime, Date oRemindShipments, Date oShipmentsTime, Date oRemindReceive, Date oReceiveTime, Date oEvaluationTime, Date oEvaluationAddTime, Integer oSellDelete, Integer oBuyDelete, String oTradeNo) {
         this.uId = uId;
         this.gId = gId;
         this.uaId = uaId;
@@ -72,6 +73,7 @@ public class Order {
         this.oEvaluationAddTime = oEvaluationAddTime;
         this.oSellDelete = oSellDelete;
         this.oBuyDelete = oBuyDelete;
+        this.oTradeNo = oTradeNo;
     }
 
     public Integer getoId() {
@@ -226,6 +228,14 @@ public class Order {
         this.oBuyDelete = oBuyDelete;
     }
 
+    public String getoTradeNo() {
+        return oTradeNo;
+    }
+
+    public void setoTradeNo(String oTradeNo) {
+        this.oTradeNo = oTradeNo;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
@@ -248,6 +258,7 @@ public class Order {
                 ", oEvaluationAddTime=" + oEvaluationAddTime +
                 ", oSellDelete=" + oSellDelete +
                 ", oBuyDelete=" + oBuyDelete +
+                ", oTradeNo='" + oTradeNo + '\'' +
                 '}';
     }
 }

@@ -3,32 +3,35 @@ package com.gomai.order.controller;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.request.AlipayTradePagePayRequest;
-import com.github.pagehelper.PageHelper;
+import com.alipay.api.request.AlipayTradeRefundRequest;
+import com.alipay.api.response.AlipayTradeRefundResponse;
 import com.gomai.goods.pojo.Goods;
 import com.gomai.goods.pojo.Unshelve;
+import com.gomai.intergral.pojo.IntegralExchange;
 import com.gomai.order.config.AlipayConfig;
 import com.gomai.order.delay.DelayService;
 import com.gomai.order.delay.DshOrder;
 import com.gomai.order.pojo.Order;
+import com.gomai.order.pojo.OrderReturn;
+import com.gomai.order.pojo.OrderReturnMedia;
 import com.gomai.order.service.*;
 import com.gomai.order.utils.PageUtils;
-import com.gomai.order.vo.GoodsVo;
-import com.gomai.order.vo.OrderVo;
-import com.gomai.order.vo.QueryParams;
+import com.gomai.order.vo.*;
 import com.gomai.user.pojo.User;
 import com.gomai.user.pojo.UserAddress;
 import com.gomai.utils.PageResult;
 import com.gomai.utils.ReturnMessage;
 import com.gomai.utils.ReturnMessageUtil;
 import com.gomai.utils.SbException;
-import com.sun.media.jfxmedia.logging.Logger;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -53,6 +56,13 @@ public class OrderController {
 
     @Autowired
     private DelayService delayService;
+    @Autowired
+    private OrderReturnService orderReturnService;
+
+    @Autowired
+    private OrderReturnMediaService orderReturnMediaService;
+    @Autowired
+    private OExchangeService oExchangeService;
 
     /**
      *生成订单
@@ -120,8 +130,8 @@ public class OrderController {
         order.setoStatus(1);//刚创建订单时为待付款
         Date oCreateTime = new Date();
         order.setoCreateTime(oCreateTime);
-        order.setoSellDelete(0);
-        order.setoBuyDelete(0);
+        order.setoSellDelete(1);
+        order.setoBuyDelete(1);
         int flag = this.orderService.addOrder(order);
         if (flag == 0){
             throw new SbException(100, "添加失败!");
@@ -196,6 +206,8 @@ public class OrderController {
         return message;
     }
 
+
+
     /**
      * 查询已经购买的商品的订单
      * @param uId   买家Id
@@ -213,7 +225,9 @@ public class OrderController {
         }
         Order order = new Order();
         order.setoStatus(type);
+        order.setoBuyDelete(1);
         order.setuId(uId);
+        System.out.println(order);
         PageUtils pageUtils = new PageUtils();
         QueryParams<Order> queryParams = new QueryParams<Order>();
         queryParams.setData(order);
@@ -249,7 +263,9 @@ public class OrderController {
         OrderVo orderVo = new OrderVo();
         orderVo.setoStatus(type);
         orderVo.setGoodsVo(goodsVo);
+        orderVo.setoSellDelete(1);
         PageUtils pageUtils = new PageUtils();
+        System.out.println(orderVo);
         QueryParams<OrderVo> queryParams = new QueryParams<OrderVo>();
         queryParams.setData(orderVo);
         queryParams.setPage(currentPage);
@@ -262,54 +278,691 @@ public class OrderController {
         return message;
     }
 
-
     /**
      * 发货请求
      * 1. 判断oId,uId,oStatus是否合法
      * 2. 判断oStatus是否为2即未发货
-     * 3. 根据三个条件查询订单是否存在
+     * 3. 根据三个条件查询订单是否存在，根据卖家id查询是否存在oid和oStatus的订单
      * 4. 更新订单状态
      * 5. 创建定时器（即15天未确认收货则自动确认收货）
-     * @param orderVo：订单信息
+     * @param uId  卖家uId
+     * @param oId  订单Id
+     * @param oStatus 订单状态
      * @return
      */
     @Transactional
-    @PostMapping("/shipments")
-    public ReturnMessage<Object> shipments(@RequestBody  OrderVo orderVo){
-        if(StringUtils.isEmpty(orderVo)){
+    @PostMapping("/shipments/{uId}/{oId}/{oStatus}")
+    public ReturnMessage<Object> shipments(@PathVariable("uId") Integer uId,@PathVariable("oId") Integer oId,@PathVariable("oStatus") Integer oStatus){
+        if (StringUtils.isEmpty(uId) || uId == 0 ||StringUtils.isEmpty(oId) || oId == 0||StringUtils.isEmpty(oStatus) || oStatus == 0 ){
             throw new SbException(100, "参数错误!");
         }
-        if(StringUtils.isEmpty(orderVo.getUser())){
-            throw new SbException(100, "参数错误!");
-        }
-        if (StringUtils.isEmpty(orderVo.getoId()) || orderVo.getoId() == 0 ||StringUtils.isEmpty(orderVo.getUser().getuId()) || orderVo.getUser().getuId() == 0||StringUtils.isEmpty(orderVo.getoStatus()) || orderVo.getoStatus() == 0 ){
-            throw new SbException(100, "参数错误!");
-        }
-        List<OrderVo> orderVos = orderService.queryOrderVoBySaleUId(orderVo);
-        if (CollectionUtils.isEmpty(orderVos)){
-            throw new SbException(100, "无该订单!");
-        }
-        if(orderVo.getoStatus() != 2){
+        if(oStatus != 2){
             throw new SbException(100, "不是待发货订单!");
         }
-        orderVo = orderVos.get(0);
-        Order order = new Order();
-        order.setoId(orderVo.getoId());
-        order.setuId(orderVo.getUser().getuId());
-        order.setgId(orderVo.getGoodsVo().getgId());
-        order.setUaId(orderVo.getUserAddress().getUaId());
-        order.setoCreateTime(orderVo.getoCreateTime());
-        order.setoPayTime(orderVo.getoPayTime());
+        List<Order> orders = orderService.queryOrderBySaleUId(uId, oId, oStatus);
+        for (Order order:orders) {
+            System.out.println(order);
+        }
+        if (CollectionUtils.isEmpty(orders)){
+            throw new SbException(100, "无该订单!");
+        }
+        if( orders.size() <= 0){
+            throw new SbException(100, "无该订单!");
+        }
+        Order order = orders.get(0);
+
+        if (StringUtils.isEmpty(order)){
+            throw new SbException(100, "无该订单!");
+        }
         order.setoShipmentsTime(new Date());
         order.setoStatus(3);
         int flag = orderService.updateOrder(order);
         if (flag == 0){
             throw new SbException(100, "更新失败!");
         }
-        DshOrder dshOrder = new DshOrder(""+orderVo.getoId(),1 * 1000,3);
+        DshOrder dshOrder = new DshOrder(""+order.getoId(),60 * 60 * 1000,3);
         delayService.add(dshOrder);
         ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",true);
         System.out.println(message);
         return message;
+    }
+
+
+    /**
+     * 确认收货函数
+     * 1. 判断oId,uId,oStatus是否合法
+     * 2. 判断oStatus是否为3即未收货
+     * 3. 根据三个条件查询订单是否存在，根据买家id查询是否存在oid和oStatus的订单
+     * 4. 更新订单状态
+     * 5. 生成积分明细
+     * 6. 创建定时器（即15天未评价则将订单改为已评价，评价为默认评价）
+     */
+    @Transactional
+    @PostMapping("/received")
+    public ReturnMessage<Object> shipments(@RequestBody Order order){
+        System.out.println(order);
+        if (StringUtils.isEmpty(order)){
+            throw new SbException(100, "参数错误!");
+        }
+        if (StringUtils.isEmpty(order.getuId()) || order.getuId() == 0 ||StringUtils.isEmpty(order.getoId()) || order.getoId() == 0||StringUtils.isEmpty(order.getoStatus()) || order.getoStatus() == 0 ){
+            throw new SbException(100, "参数错误!");
+        }
+        if (order.getoStatus() != 3){
+            throw new SbException(100, "不是未收货订单!");
+        }
+        List<Order> orders =  orderService.queryOrderByOrder(order);
+        if (CollectionUtils.isEmpty(orders)){
+            throw new SbException(100, "无该订单!");
+        }
+        if( orders.size() <= 0){
+            throw new SbException(100, "无该订单!");
+        }
+        Order order1 = orders.get(0);
+        order1.setoStatus(4);
+        order1.setoReceiveTime(new Date());
+        int flag = orderService.updateOrder(order1);
+        if (flag == 0){
+            throw new SbException(100, "更新错误!");
+        }
+        //生成积分明细:插入积分明细和更改个人总积分
+        flag = oExchangeService.addIntegralExchange(order1.getoId());
+        if (flag == 0){
+            throw new SbException(100, "更新错误!");
+        }
+        //创建定时器（即15天未评价则将订单改为已评价，评价为默认评价）
+        DshOrder dshOrder = new DshOrder(""+order.getoId(),60 * 60 * 1000,4);
+        delayService.add(dshOrder);
+        ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",true);
+        System.out.println(message);
+        return message;
+    }
+
+    /**
+     * 修改价格
+     * 1. 判断oId,uId,oStatus，g_price是否合法
+     * 2. 判断oStatus是否为1即未付款
+     * 3. 根据三个条件查询订单是否存在，根据卖家id查询是否存在oid和oStatus的订单
+     * 4. 根据gId查询对应商品
+     * 5. 修改商品价格
+     */
+    @Transactional
+    @PostMapping("/updatePrice/{uId}/{oId}/{oStatus}/{gPrice}")
+    public ReturnMessage<Object> updatePrice(@PathVariable("uId") Integer uId,@PathVariable("oId") Integer oId,@PathVariable("oStatus") Integer oStatus,@PathVariable("gPrice") Double gPrice){
+        if (StringUtils.isEmpty(uId) || uId == 0 ||StringUtils.isEmpty(oId) || oId == 0||StringUtils.isEmpty(oStatus) || oStatus == 0 ||StringUtils.isEmpty(gPrice)){
+            throw new SbException(100, "参数错误!");
+        }
+        if(oStatus != 1){
+            throw new SbException(100, "不是未付款订单!");
+        }
+        List<Order> orders = orderService.queryOrderBySaleUId(uId, oId, oStatus);
+        for (Order order:orders) {
+            System.out.println(order);
+        }
+        if (CollectionUtils.isEmpty(orders)){
+            throw new SbException(100, "无该订单!");
+        }
+        if( orders.size() <= 0){
+            throw new SbException(100, "无该订单!");
+        }
+        Order order = orders.get(0);
+        if (StringUtils.isEmpty(order)){
+            throw new SbException(100, "无该订单!");
+        }
+        Goods goods = oGoodsService.queryGoodsByGId(order.getgId());
+        if (StringUtils.isEmpty(goods)){
+            throw new SbException(100, "无该商品!");
+        }
+        goods.setgPrice(gPrice);
+        int flag = oGoodsService.updateGoods(goods);
+        if (flag == 0){
+            throw new SbException(100, "修改失败!");
+        }
+        ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",true);
+        System.out.println(message);
+        return message;
+    }
+
+    /**
+     * 提醒发货(买家的操作)
+     * 1. 判断oId,uId,oStatus,是否合法
+     * 2. 判断oStatus是否为2即待发货订单
+     * 3. 根据三个条件查询订单是否存在，根据买家id
+     * 4. 判断提醒发货是否为空，为空则直接修改提醒发货时间，给卖家发消息（先不实现）
+     * 5. 如果不为空，判断两个时间是否为同一天，不是同一天就修改提醒发货时间，是就返回错误信息，今天已经提醒发货了
+     */
+    @Transactional
+    @PostMapping("/remindShipments")
+    public ReturnMessage<Object> remindShipments(@RequestBody Order order) {
+        System.out.println(order);
+        if (StringUtils.isEmpty(order)) {
+            throw new SbException(100, "参数错误!");
+        }
+        if (StringUtils.isEmpty(order.getuId()) || order.getuId() == 0 || StringUtils.isEmpty(order.getoId()) || order.getoId() == 0 || StringUtils.isEmpty(order.getoStatus()) || order.getoStatus() == 0) {
+            throw new SbException(100, "参数错误!");
+        }
+        if (order.getoStatus() != 2) {
+            throw new SbException(100, "不是未发货订单!");
+        }
+        List<Order> orders = orderService.queryOrderByOrder(order);
+        if (CollectionUtils.isEmpty(orders)) {
+            throw new SbException(100, "无该订单!");
+        }
+        if (orders.size() <= 0) {
+            throw new SbException(100, "无该订单!");
+        }
+        Order order1 = orders.get(0);
+        if(StringUtils.isEmpty(order1.getoRemindShipments())){
+            order1.setoRemindShipments(new Date());
+        }else{
+            boolean flag = isThisTime(order1.getoRemindShipments(),"yyyy-MM-dd");
+            if (flag){ // 是今天
+                throw new SbException(100, "今天已经提醒发货了!");
+            }else {
+                order1.setoRemindShipments(new Date());
+            }
+        }
+        int flag = orderService.updateOrder(order1);
+        if (flag == 0){
+            throw new SbException(100, "提醒失败!");
+        }
+//        此处需给卖家发消息（迪）提醒发货
+        ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",true);
+        System.out.println(message);
+        return message;
+    }
+
+    /**
+     * 提醒收货(卖家的操作)
+     * 1. 判断oId,uId,oStatus,是否合法
+     * 2. 判断oStatus是否为3即待发收货订单
+     * 3. 根据三个条件查询订单是否存在，根据卖家id
+     * 4. 判断提醒收货时间是否为空，为空则直接修改提醒收货时间，给买家发消息（先不实现）
+     * 5. 如果不为空，判断两个时间是否为同一天，不是同一天就修改提醒收货时间，是就返回错误信息，今天已经提醒收货了
+     */
+    @Transactional
+    @PostMapping("/remindReceive/{uId}/{oId}/{oStatus}")
+    public ReturnMessage<Object> remindReceive(@PathVariable("uId") Integer uId,@PathVariable("oId") Integer oId,@PathVariable("oStatus") Integer oStatus) {
+        if (StringUtils.isEmpty(uId) || uId == 0 || StringUtils.isEmpty(oId) || oId == 0 || StringUtils.isEmpty(oStatus) || oStatus == 0) {
+            throw new SbException(100, "参数错误!");
+        }
+        if (oStatus != 3) { //待发货订单
+            throw new SbException(100, "不是待发货订单!");
+        }
+        List<Order> orders = orderService.queryOrderBySaleUId(uId, oId, oStatus);
+        for (Order order : orders) {
+            System.out.println(order);
+        }
+        if (CollectionUtils.isEmpty(orders)) {
+            throw new SbException(100, "无该订单!");
+        }
+        if (orders.size() <= 0) {
+            throw new SbException(100, "无该订单!");
+        }
+        Order order = orders.get(0);
+        if (StringUtils.isEmpty(order)) {
+            throw new SbException(100, "无该订单!");
+        }
+        if(StringUtils.isEmpty(order.getoRemindReceive())){
+            order.setoRemindReceive(new Date());
+        }else{
+            boolean flag = isThisTime(order.getoRemindReceive(),"yyyy-MM-dd");
+            if (flag){ // 是今天
+                throw new SbException(100, "今天已经提醒收货了!");
+            }else {
+                order.setoRemindReceive(new Date());
+            }
+        }
+        int flag = orderService.updateOrder(order);
+        if (flag == 0){
+            throw new SbException(100, "提醒失败!");
+        }
+//        此处需给卖家发消息（迪）提醒发货
+        ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",true);
+        System.out.println(message);
+        return message;
+    }
+
+    /**
+     *删除订单(买家)
+     * 1. 判断oId,uId,oStatus,是否合法
+     * 2. 判断oStatus是否为4即待评价订单
+     * 3. 根据三个条件查询订单是否存在，根据买家id
+     * @return
+     */
+    @Transactional
+    @PostMapping("/buyDelete")
+    public ReturnMessage<Object> buyDelete(@RequestBody Order order) {
+        System.out.println(order);
+        if (StringUtils.isEmpty(order)) {
+            throw new SbException(100, "参数错误!");
+        }
+        if (StringUtils.isEmpty(order.getuId()) || order.getuId() == 0 || StringUtils.isEmpty(order.getoId()) || order.getoId() == 0 || StringUtils.isEmpty(order.getoStatus()) || order.getoStatus() == 0) {
+            throw new SbException(100, "参数错误!");
+        }
+        if (order.getoStatus() != 4 && order.getoStatus() != 6&& order.getoStatus() != 5) {
+            throw new SbException(100, "不能删除!");
+        }
+        List<Order> orders = orderService.queryOrderByOrder(order);
+        if (CollectionUtils.isEmpty(orders)) {
+            throw new SbException(100, "无该订单!");
+        }
+        if (orders.size() <= 0) {
+            throw new SbException(100, "无该订单!");
+        }
+        Order order1 = orders.get(0);
+        if (StringUtils.isEmpty(order1)) {
+            throw new SbException(100, "无该订单!");
+        }
+        order1.setoBuyDelete(2);//删除
+        int flag = orderService.updateOrder(order1);
+        if (flag == 0){
+            throw new SbException(100, "删除失败!");
+        }
+        ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",true);
+        System.out.println(message);
+        return message;
+    }
+
+    /**
+     *删除订单(卖家)
+     * @return
+     */
+    @Transactional
+    @PostMapping("/sellDelete/{uId}/{oId}/{oStatus}")
+    public ReturnMessage<Object> sellDelete(@PathVariable("uId") Integer uId,@PathVariable("oId") Integer oId,@PathVariable("oStatus") Integer oStatus) {
+        if (StringUtils.isEmpty(uId) || uId == 0 || StringUtils.isEmpty(oId) || oId == 0 || StringUtils.isEmpty(oStatus) || oStatus == 0) {
+            throw new SbException(100, "参数错误!");
+        }
+        if (oStatus != 4 && oStatus != 6 && oStatus != 5) { //待评价订单
+            throw new SbException(100, "不能删除!");
+        }
+        List<Order> orders = orderService.queryOrderBySaleUId(uId, oId, oStatus);
+        for (Order order : orders) {
+            System.out.println(order);
+        }
+        if (CollectionUtils.isEmpty(orders)) {
+            throw new SbException(100, "无该订单!");
+        }
+        if (orders.size() <= 0) {
+            throw new SbException(100, "无该订单!");
+        }
+        Order order = orders.get(0);
+        if (StringUtils.isEmpty(order)) {
+            throw new SbException(100, "无该订单!");
+        }
+        order.setoSellDelete(2);//删除
+        int flag = orderService.updateOrder(order);
+        if (flag == 0){
+            throw new SbException(100, "删除失败!");
+        }
+        ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",true);
+        System.out.println(message);
+        return message;
+    }
+
+    private static boolean isThisTime(Date date,String pattern) {
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        String param = sdf.format(date);//参数时间
+        String now = sdf.format(new Date());//当前时间
+        if(param.equals(now)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 取消订单功能
+     * 1.验证前端参数
+     * 2.根据类型分别验证是否存在订单
+     * 3.取消订单
+     * 4.该退款的订单退款
+     * 5.返回
+     */
+    @Transactional
+    @PostMapping("/cancelOrder/{oId}/{uId}/{oCancelType}")
+    public ReturnMessage<Object> cancelOrder(@PathVariable("oId") Integer oId,@PathVariable("uId") Integer uId,@PathVariable("oCancelType") Integer oCancelType)throws Exception{
+        // 1.验证前端参数
+        if (StringUtils.isEmpty(uId) || uId <= 0 ||StringUtils.isEmpty(oId) || oId <= 0||StringUtils.isEmpty(oCancelType) || oCancelType <= 0 ){
+            throw new SbException(100, "参数错误!");
+        }
+        // 2. 根据类型分别验证是否存在订单
+        if (oCancelType == 1 || oCancelType == 3){  //如果取消订单类型为1,即买家取消未支付订单,如果取消订单类型为2，即买家取消待发货订单
+            Order order = new Order();
+            order.setoId(oId);
+            order.setuId(uId);
+            if (oCancelType == 1){
+                order.setoStatus(1);
+            }
+            if ( oCancelType == 3){
+                order.setoStatus(2);
+            }
+            List<Order> orders =  orderService.queryOrderByOrder(order);
+            if (CollectionUtils.isEmpty(orders)){
+                throw new SbException(100, "无相关订单!");
+            }
+            if (StringUtils.isEmpty(orders.get(0))){
+                throw new SbException(100, "无相关订单!");
+            }
+            // 3. 取消订单
+            order.setoStatus(6);
+            order.setoCancelType(oCancelType);
+            int flag = orderService.updateOrder(order);
+            if (flag == 0){
+                throw new SbException(100, "取消订单失败!");
+            }
+        }else if (oCancelType == 2 || oCancelType == 4){//如果取消订单类型为1,即卖家取消未支付订单,如果取消订单类型为2，即卖家取消待发货订单
+            OrderVo orderVo = new OrderVo();
+            GoodsVo goodsVo = new GoodsVo();
+            User user = new User();
+            user.setuId(uId);
+            goodsVo.setUser(user);
+            orderVo.setGoodsVo(goodsVo);
+            orderVo.setoId(oId);
+            if (oCancelType == 2){
+                orderVo.setoStatus(1);
+            }
+            if ( oCancelType == 4){
+                orderVo.setoStatus(2);
+            }
+            List<OrderVo> orderVos = orderService.queryOrderVoBySaleUId(orderVo);
+            if (CollectionUtils.isEmpty(orderVos)){
+                throw new SbException(100, "无相关订单!");
+            }
+            if (StringUtils.isEmpty(orderVos.get(0))){
+                throw new SbException(100, "无相关订单!");
+            }
+            // 3. 取消订单
+            Order order = new Order();
+            order.setoId(oId);
+            order.setoStatus(6);
+            order.setoCancelType(oCancelType);
+            int flag = orderService.updateOrder(order);
+            if (flag == 0){
+                throw new SbException(100, "取消订单失败!");
+            }
+        }
+        //4. 退货退款
+        if (oCancelType == 3 || oCancelType == 4){
+            //调用支付宝退款函数
+            alipayReturn(oId);
+        }
+        ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",true);
+        System.out.println(message);
+        return message;
+    }
+
+
+    /**
+     * 申请退货退款功能
+     * 1. 验证传来的参数 u_id、o_id、oStatus、or_reason、or_received和媒体类参数
+     * 2. 根据 u_id、o_id、oStatus查询是否存在订单，oStatus是否是3,4
+     * 3. 插入退货退款表，和退货退款媒体表
+     * 4. 更新订单的状态为7,8
+     * 5. 开启定时器，未在规定时间内处理自动处理
+     * 6. 返回
+     */
+    @Transactional
+    @PostMapping("/askReturn")
+    public ReturnMessage<Object> askReturn(@RequestBody AskReturnParams askReturnParams){
+        if (StringUtils.isEmpty(askReturnParams)){
+            throw new SbException(100, "输入不合法");
+        }
+        if (StringUtils.isEmpty(askReturnParams.getoId()) || askReturnParams.getoId() <0 || StringUtils.isEmpty(askReturnParams.getuId()) || askReturnParams.getuId() <0 || StringUtils.isEmpty(askReturnParams.getoStatus()) || askReturnParams.getoStatus() <0 ){
+            throw new SbException(100, "输入不合法");
+        }
+        if (StringUtils.isEmpty(askReturnParams.getOrderReturn())){
+            throw new SbException(100, "输入不合法");
+        }
+        if (StringUtils.isEmpty(askReturnParams.getOrderReturn().getOrReason()) || StringUtils.isEmpty(askReturnParams.getOrderReturn().getOrReceived())){
+            throw new SbException(100, "输入不合法");
+        }
+        if (CollectionUtils.isEmpty(askReturnParams.getOrderReturnMedias())){
+            throw new SbException(100, "输入不合法");
+        }
+        if (askReturnParams.getoStatus() != 3  && askReturnParams.getoStatus() != 4 ){
+            throw new SbException(100, "不能退货退款！");
+        }
+        Order order = new Order();
+        order.setoId(askReturnParams.getoId());
+        order.setoStatus(askReturnParams.getoStatus());
+        order.setuId(askReturnParams.getuId());
+        List<Order> orders = orderService.queryOrderByOrder(order);
+        if (CollectionUtils.isEmpty(orders)){
+            throw new SbException(100, "订单不存在");
+        }
+        askReturnParams.getOrderReturn().setoId(askReturnParams.getoId());
+        askReturnParams.getOrderReturn().setOrCreateTime(new Date());
+        askReturnParams.getOrderReturn().setOrStatus(1);//买家申请退货退款
+        int flag = orderReturnService.insertOrderReturn(askReturnParams.getOrderReturn());
+        if (flag == 0){
+            throw new SbException(100, "申请失败！");
+        }
+        for (OrderReturnMedia orderReturnMedia :askReturnParams.getOrderReturnMedias()) {
+            orderReturnMedia.setOrId(askReturnParams.getOrderReturn().getOrId());
+        }
+        flag = orderReturnMediaService.insertOrderReturnMedias(askReturnParams.getOrderReturnMedias());
+        if (flag == 0){
+            throw new SbException(100, "申请失败！");
+        }
+        if (askReturnParams.getoStatus() == 3){
+            orders.get(0).setoStatus(7);//如果是待收货申请退货退款就将订单状态改为7
+        }
+        if (askReturnParams.getoStatus() == 4){
+            orders.get(0).setoStatus(7);//如果是待评价申请退货退款就将订单状态改为8
+        }
+        flag = orderService.updateOrder(orders.get(0));
+        //定时器，多久之内没有处理就自动同意
+        DshOrder dshOrder = new DshOrder(""+askReturnParams.getOrderReturn().getOrId(),60 * 60 * 1000,5);
+        delayService.add(dshOrder);
+
+        if (flag == 0){
+            throw new SbException(100, "申请失败！");
+        }
+        return ReturnMessageUtil.sucess(true);
+    }
+
+    /**
+     * 查看退货退款详情
+     * 1. 验证前端传来的数据
+     * 2. 根据oId,uId,oStatus和isBuy查询是否存在该订单
+     * 2. 根据oId查询退货退款表状态码为1.2.3的退货退款
+     * 3. 返回
+     */
+    @Transactional
+    @PostMapping("/getReturnDetail/{oId}/{uId}/{oStatus}/{isBuy}")
+    public ReturnMessage<Object> getReturnDetail(@PathVariable("uId") Integer uId,@PathVariable("oId") Integer oId,@PathVariable("oStatus") Integer oStatus,@PathVariable("isBuy") Boolean isBuy) {
+        check(uId, oId, oStatus, isBuy);
+        List<Integer> orStatus = new ArrayList<Integer>();
+        orStatus.add(1);
+        orStatus.add(2);
+        orStatus.add(3);
+        //根据oId查询退货退款表状态码为1.2.3的退货退款
+        List<OrderReturnVo> orderReturnVos =  orderReturnService.queryOrderReturnVoByOthers(oId,orStatus);
+        return ReturnMessageUtil.sucess(orderReturnVos.get(0));
+    }
+
+
+
+    /**
+     * 同意退货退款请求
+     * 1.验证
+     * 2. 退款
+     * 3. 更改退货退款状态
+     * 5. 扣除之前已经加入的积分
+     * 4. 返回
+     * @param  orId
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/goReturn/{orId}")
+    @ResponseBody
+    public ReturnMessage<Object> goReturn(@PathVariable("orId") Integer orId) throws Exception {
+        if (StringUtils.isEmpty(orId) || orId == 0){
+            throw new SbException(100, "参数错误!");
+        }
+        OrderReturn orderReturn = orderReturnService.queryOrderReturnById(orId);
+        if (StringUtils.isEmpty(orderReturn)){
+            throw new SbException(100, "参数错误!");
+        }
+//        退款函数
+        alipayReturn(orderReturn.getoId());
+        //更改退货退款状态
+        orderReturn.setOrStatus(2);
+        int flag= orderReturnService.updateReturnService (orderReturn);
+        if (flag == 0){
+            throw new SbException(100, "退款失败");
+        }
+        //扣除之前加入的积分
+        flag = oExchangeService.reduceIntegralExchange(orderReturn.getoId());
+        if (flag == 0){
+            throw new SbException(100, "退款失败");
+        }
+        ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",true);
+        System.out.println(message);
+        return message;
+    }
+
+
+    //
+    public void  alipayReturn(Integer oId)throws Exception{
+        AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.gatewayUrl, AlipayConfig.app_id, AlipayConfig.merchant_private_key, "json", AlipayConfig.charset, AlipayConfig.alipay_public_key, AlipayConfig.sign_type);
+        //设置请求参数
+        AlipayTradeRefundRequest alipayRequest = new AlipayTradeRefundRequest();
+        Order temp = new Order();
+        temp.setoId(oId);
+        List<OrderVo> orderVos = orderService.queryOrderVoByOthers(temp);
+        //商户订单号，商户网站订单系统中唯一订单号
+        String out_trade_no = "" + oId;
+        //支付宝交易号
+        String trade_no = orderVos.get(0).getoTradeNo();
+        //请二选一设置
+        //需要退款的金额，该金额不能大于订单金额，必填
+        String refund_amount = ""+ orderVos.get(0).getGoodsVo().getgPrice();
+        //退款的原因说明
+        String refund_reason = "";
+        //标识一次退款请求，同一笔交易多次退款需要保证唯一，如需部分退款，则此参数必传
+        String out_request_no = "";
+//
+        alipayRequest.setBizContent("{\"out_trade_no\":\""+ out_trade_no +"\","
+                + "\"trade_no\":\""+ trade_no +"\","
+                + "\"refund_amount\":\""+ refund_amount +"\","
+                + "\"refund_reason\":\""+ refund_reason +"\","
+                + "\"out_request_no\":\""+ out_request_no +"\"}");
+
+        //请求
+        AlipayTradeRefundResponse response;
+        response = alipayClient.execute(alipayRequest);
+        if (!response.isSuccess()) {
+            throw new SbException(100, "退款失败");
+        }
+    }
+    /*
+        拒绝申请
+        1. 验证
+        2. 修改状态
+        3. 创建定时器
+     */
+    @RequestMapping(value = "/refusedReturn/{orId}")
+    @ResponseBody
+    public ReturnMessage<Object> refusedReturn(@PathVariable("orId") Integer orId) throws Exception {
+        if (StringUtils.isEmpty(orId) || orId == 0) {
+            throw new SbException(100, "参数错误!");
+        }
+        OrderReturn orderReturn = orderReturnService.queryOrderReturnById(orId);
+        if (StringUtils.isEmpty(orderReturn)) {
+            throw new SbException(100, "参数错误!");
+        }
+        orderReturn.setOrStatus(3);
+        orderReturn.setOrRefusedTime(new Date());
+        int flag = orderReturnService.updateReturnService(orderReturn);
+        if (flag == 0){
+            throw new SbException(100, "拒绝失败");
+        }
+        //创建定时器
+        DshOrder dshOrder = new DshOrder(""+orId,60 * 60 * 1000,6);
+        delayService.add(dshOrder);
+        ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",true);
+        System.out.println(message);
+        return message;
+    }
+
+
+    /*
+        撤销申请
+        1.验证
+        2. 修改状态
+        3. 更改订单的状态，改回之前的状态
+     */
+    @RequestMapping(value = "/backoutReturn/{orId}")
+    @ResponseBody
+    public ReturnMessage<Object> backoutReturn(@PathVariable("orId") Integer orId) throws Exception {
+        if (StringUtils.isEmpty(orId) || orId == 0) {
+            throw new SbException(100, "参数错误!");
+        }
+        OrderReturn orderReturn = orderReturnService.queryOrderReturnById(orId);
+        if (StringUtils.isEmpty(orderReturn)) {
+            throw new SbException(100, "参数错误!");
+        }
+        orderReturn.setOrStatus(4);
+        int flag = orderReturnService.updateReturnService(orderReturn);
+        if (flag == 0){
+            throw new SbException(100, "撤销失败");
+        }
+        Order order = orderService.queryOrderByOId(orderReturn.getoId());
+        if (StringUtils.isEmpty(order)){
+            throw new SbException(100, "撤销失败");
+        }
+        if (order.getoStatus() == 7){
+            order.setoStatus(3);
+        }
+        if (order.getoStatus() == 8){
+            order.setoStatus(4);
+        }
+        flag = orderService.updateOrder(order);
+        if (flag == 0){
+            throw new SbException(100, "撤销失败");
+        }
+        ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",true);
+        System.out.println(message);
+        return message;
+    }
+
+
+    public void check(Integer uId,Integer oId,Integer oStatus, Boolean isBuy){
+        if (StringUtils.isEmpty(uId) || uId == 0 || StringUtils.isEmpty(oId) || oId == 0 || StringUtils.isEmpty(oStatus) || oStatus == 0 || StringUtils.isEmpty(isBuy)) {
+            throw new SbException(100, "参数错误!");
+        }
+        if (isBuy) {//如果是买家
+            Order order = new Order();
+            order.setoId(oId);
+            order.setuId(uId);
+            order.setoStatus(oStatus);
+            List<Order> orders = orderService.queryOrderByOrder(order);
+            if (CollectionUtils.isEmpty(orders)) {
+                throw new SbException(100, "无该订单!");
+            }
+            if (orders.size() <= 0) {
+                throw new SbException(100, "无该订单!");
+            }
+            Order order1 = orders.get(0);
+            if (StringUtils.isEmpty(order1)) {
+                throw new SbException(100, "无该订单!");
+            }
+        }else{//如果是卖家
+            List<Order> orders = orderService.queryOrderBySaleUId(uId, oId, oStatus);
+            for (Order order : orders) {
+                System.out.println(order);
+            }
+            if (CollectionUtils.isEmpty(orders)) {
+                throw new SbException(100, "无该订单!");
+            }
+            if (orders.size() <= 0) {
+                throw new SbException(100, "无该订单!");
+            }
+            Order order = orders.get(0);
+            if (StringUtils.isEmpty(order)) {
+                throw new SbException(100, "无该订单!");
+            }
+        }
     }
 }

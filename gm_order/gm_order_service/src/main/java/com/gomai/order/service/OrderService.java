@@ -4,6 +4,7 @@ import com.gomai.goods.pojo.Goods;
 import com.gomai.order.pojo.Order;
 import com.gomai.order.vo.OrderVo;
 import com.gomai.user.pojo.UserAddress;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface OrderService {
     public List<OrderVo> queryOrderVoBySaleUId(OrderVo orderVo);
 
     public List<Order> queryOrderByOrder(Order order);
+
+    public List<Order> queryOrderBySaleUId(Integer uId, Integer oId,Integer oStatus);
 }

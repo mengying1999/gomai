@@ -23,6 +23,7 @@
         <result property="oEvaluationTime" column="o_evaluation_time"></result>
         <result property="oEvaluationAddTime" column="o_evaluation_add_time"></result>
         <result property="oSellDelete" column="o_sell_delete"></result>
+        <result property="oTradeNo" column="o_trade_no"></result>
         <result property="oBuyDelete" column="o_buy_delete"></result>
         <association property="user" column="u_id" select="com.gomai.order.mapper.OUserMapper.selectByPrimaryKey"></association>
         <association property="goodsVo" column="g_id" select="com.gomai.order.mapper.OGoodsMapper.selectGoodsVoByGId"></association>
@@ -46,7 +47,9 @@
             <if test="oStatus!=null and oStatus!='' and oStatus!= 0">
                 and o_status=#{oStatus}
             </if>
-
+            <if test="oBuyDelete != null and oBuyDelete != ''">
+                and o_buy_delete = #{oBuyDelete}
+            </if>
         </where>
         order by o_create_time desc
     </select>
@@ -77,9 +80,40 @@
             <if test="oStatus != null and oStatus != '' and oStatus != 0">
                 and o_status=#{oStatus}
             </if>
-
+            <if test="oSellDelete != null and oSellDelete != ''">
+                and o_sell_delete = #{oSellDelete}
+            </if>
         </where>
         order by o_create_time desc
     </select>
 
+    <select id="selectOrderBySaleUId" resultType="com.gomai.order.pojo.Order">
+        select order_form.* from order_form, goods
+        <where>
+            <if test="oId != null and oId != '' and oId != 0">
+                and o_id=#{oId}
+            </if>
+            <if test="0 == 0">
+                and goods.u_id=#{uId}
+            </if>
+            <if test="0 == 0">
+                and goods.g_id = order_form.g_id
+            </if>
+            <!--<if test="user != null and user != ''                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ">-->
+            <!--<if test="user.uId != null and user.uId != '' and user.uId != 0">-->
+            <!--and u_id=#{user.uId}-->
+            <!--</if>-->
+            <!--</if>-->
+            <!--<if test="goodsVo.gId != null and goodsVo.gId != '' and goodsVo.gId != 0">-->
+            <!--and g_id=#{goodsVo.gId}-->
+            <!--</if>-->
+            <!--<if test="userAddress.uaId != null and userAddress.uaId != '' and userAddress.uaId != 0">-->
+            <!--and ua_id=#{userAddress.uaId}-->
+            <!--</if>-->
+            <if test="oStatus != null and oStatus != '' and oStatus != 0">
+                and o_status=#{oStatus}
+            </if>
+        </where>
+        order by o_create_time desc
+    </select>
 </mapper>

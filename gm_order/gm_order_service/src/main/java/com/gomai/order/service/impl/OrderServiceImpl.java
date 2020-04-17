@@ -41,17 +41,20 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> queryOrderByOrder(Order order) {
-        Example example = new Example(Order.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("order", order);
-        List<Order> orders = orderMapper.selectByExample(example);
+        List<Order> orders = orderMapper.select(order);
         System.out.println(orders);
         return orders;
     }
 
     @Override
+    public List<Order> queryOrderBySaleUId(Integer uId, Integer oId, Integer oStatus) {
+        System.out.println(""+uId+oId+oStatus);
+        return orderMapper.selectOrderBySaleUId(uId, oId, oStatus);
+    }
+
+    @Override
     public int updateOrder(Order order) {
-        int flag = orderMapper.updateByPrimaryKey(order);
+        int flag = orderMapper.updateByPrimaryKeySelective(order);
         return flag;
     }
 

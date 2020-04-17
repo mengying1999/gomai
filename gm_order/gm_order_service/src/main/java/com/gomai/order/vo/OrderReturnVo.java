@@ -1,41 +1,33 @@
-package com.gomai.order.pojo;
+package com.gomai.order.vo;
 
-import javax.persistence.*;
+import com.gomai.order.pojo.OrderReturnMedia;
+
+import javax.persistence.Column;
 import java.util.Date;
+import java.util.List;
 
-/**
- * 订单退货退款表
- */
-@Entity
-@Table(name = "order_return")
-public class OrderReturn {
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "or_id")
+public class OrderReturnVo {
     private Integer orId; //退货退款id
-    @Column(name = "o_id")
     private Integer oId; //订单id
-    @Column(name = "or_reason")
     private String orReason; //退货退款理由
-    @Column(name = "or_status")
     private Integer orStatus; //退货退款状态
-    @Column(name = "or_received")
     private Integer orReceived; //是否已收货
-    @Column(name = "or_create_time")
     private Date orCreateTime; //创建时间
-    @Column(name = "or_refused_time")
-    private Date orRefusedTime; //创建时间
+    private Date orRefusedTime;
+    private List<OrderReturnMedia> orderReturnMedias;
 
-    public OrderReturn() {
+    public OrderReturnVo() {
     }
 
-    public OrderReturn(Integer oId, String orReason, Integer orStatus, Integer orReceived, Date orCreateTime, Date orRefusedTime) {
+    public OrderReturnVo(Integer orId, Integer oId, String orReason, Integer orStatus, Integer orReceived, Date orCreateTime, Date orRefusedTime, List<OrderReturnMedia> orderReturnMedias) {
+        this.orId = orId;
         this.oId = oId;
         this.orReason = orReason;
         this.orStatus = orStatus;
         this.orReceived = orReceived;
         this.orCreateTime = orCreateTime;
         this.orRefusedTime = orRefusedTime;
+        this.orderReturnMedias = orderReturnMedias;
     }
 
     public Integer getOrId() {
@@ -86,6 +78,14 @@ public class OrderReturn {
         this.orCreateTime = orCreateTime;
     }
 
+    public List<OrderReturnMedia> getOrderReturnMedias() {
+        return orderReturnMedias;
+    }
+
+    public void setOrderReturnMedias(List<OrderReturnMedia> orderReturnMedias) {
+        this.orderReturnMedias = orderReturnMedias;
+    }
+
     public Date getOrRefusedTime() {
         return orRefusedTime;
     }
@@ -96,7 +96,7 @@ public class OrderReturn {
 
     @Override
     public String toString() {
-        return "OrderReturn{" +
+        return "OrderReturnVo{" +
                 "orId=" + orId +
                 ", oId=" + oId +
                 ", orReason='" + orReason + '\'' +
@@ -104,6 +104,7 @@ public class OrderReturn {
                 ", orReceived=" + orReceived +
                 ", orCreateTime=" + orCreateTime +
                 ", orRefusedTime=" + orRefusedTime +
+                ", orderReturnMedias=" + orderReturnMedias +
                 '}';
     }
 }
