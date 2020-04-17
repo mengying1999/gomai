@@ -37,12 +37,12 @@ public class User {
     @Column(name = "u_status")
     private Boolean uStatus;  // 登录状态
     @Column(name = "u_total_integral")
-    private Boolean uTotalIntegral;  // 登录状态
+    private int uTotalIntegral;  // 个人积分总数
 
     public User() {
     }
 
-    public User(String uName, String uPassword, Boolean uSex, String uAvatar, String uIdentity, String uSchool, String uLike, Date uBirthday, String uPhone, String uAutoResponse, Boolean uStatus, Boolean uTotalIntegral) {
+    public User(String uName, String uPassword, Boolean uSex, String uAvatar, String uIdentity, String uSchool, String uLike, Date uBirthday, String uPhone, String uAutoResponse, Boolean uStatus, int uTotalIntegral) {
         this.uName = uName;
         this.uPassword = uPassword;
         this.uSex = uSex;
@@ -113,11 +113,11 @@ public class User {
         this.uStatus = uStatus;
     }
 
-    public Boolean getuTotalIntegral() {
+    public int getuTotalIntegral() {
         return uTotalIntegral;
     }
 
-    public void setuTotalIntegral(Boolean uTotalIntegral) {
+    public void setuTotalIntegral(int uTotalIntegral) {
         this.uTotalIntegral = uTotalIntegral;
     }
 

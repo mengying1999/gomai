@@ -1,8 +1,7 @@
 package com.gomai.user.controller;
 
-import com.gomai.user.mapper.UserMapper;
 import com.gomai.user.pojo.User;
-import com.gomai.user.service.impl.UserService;
+import com.gomai.user.service.UserService;
 import com.gomai.utils.ReturnMessage;
 import com.gomai.utils.ReturnMessageUtil;
 import com.gomai.utils.SbException;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/UserEdit")
@@ -26,19 +24,19 @@ public class UserEditController {
      * 4.更新
      * 5.返回
      */
-  /*  @RequestMapping("Edit")
+    @RequestMapping("Edit")
     public ReturnMessage<Object> Edit(@RequestBody User user){
 
         if (StringUtils.isEmpty(user)) {
             throw new SbException(400, "输入不合法");
         }
         int uid=user.getuId();
-        User user1=this.userService.selectByuid(uid);
+        User user1=this.userService.selectUserByUid(uid);
         if(StringUtils.isEmpty(user1)){
             throw new SbException(400, "不存在该用户");
         }
 
             else System.out.println("修改失败！");
         return ReturnMessageUtil.sucess(true);
-    }*/
+    }
 }

@@ -16,4 +16,10 @@ public class IEUserServiceImpl implements IEUserService {
         return user;
     }
 
+    @Override
+    public int updateByuTotalIntegral(User user) {
+        int flag=this.iEUserMapper.updateByPrimaryKey(user);
+        return flag;
+    }
+
 }

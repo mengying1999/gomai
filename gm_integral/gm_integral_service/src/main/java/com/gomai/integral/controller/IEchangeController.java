@@ -138,6 +138,9 @@ public class IEchangeController {
         if(flag==0){
             throw  new SbException(400,"删除失败");
         }
+        int uTotalIntegral=user.getuTotalIntegral()-integralGoods.getIgIntegral();
+        user.setuTotalIntegral(uTotalIntegral);
+        int flag1=this.iEUserService.updateByuTotalIntegral(user);
         return ReturnMessageUtil.sucess(true);
     }
     /**
