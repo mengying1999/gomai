@@ -12,15 +12,8 @@ public class IEUserServiceImpl implements IEUserService {
     private  IEUserMapper iEUserMapper;
     @Override
     public User selectUserByUid(Integer uId) {
-        User user=iEUserMapper.selectByPrimaryKey(uId);
+        User user=this.iEUserMapper.selectByPrimaryKey(uId);
         return user;
     }
 
-    @Override
-    public int deleteByuId(Integer uId) {
-        User user=new User();
-        user.setuId(uId);
-        int flag=this.iEUserMapper.delete(user);
-        return 0;
-    }
 }

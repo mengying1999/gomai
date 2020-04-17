@@ -6,5 +6,4 @@ import com.gomai.user.pojo.User;
 public interface IEUserService {
     public User selectUserByUid(Integer uid);
 
-    public int deleteByuId(Integer uId);
 }

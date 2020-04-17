@@ -18,4 +18,8 @@ public interface IExchangeService {
     public int deleteByieId(int ieId);
 
     public IntegralExchange selectByieId(Integer ieId);
+
+    public int insertIE(Integer uId, Integer igId);
+
+    public int deleteByuId(Integer uId);
 }

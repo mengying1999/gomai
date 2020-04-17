@@ -11,5 +11,7 @@ public interface IGoodsService {
     public IntegralGoods SelectByigId(int igId);
 
 
-    List<IntegralGoods> selecetByigType(String igType);
+    public List<IntegralGoods> selecetByigType(String igType);
+
+    public List<IntegralGoods> SelectByigName(String igName);
 }

@@ -1,15 +1,20 @@
 package com.gomai.integral.controller;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.gomai.integral.service.IEUserService;
 import com.gomai.integral.service.IExchangeService;
+import com.gomai.integral.service.IGoodsService;
 import com.gomai.integral.vo.GoodsVo;
 import com.gomai.integral.vo.IChangeVo;
 import com.gomai.intergral.pojo.IntegralExchange;
 import com.gomai.intergral.pojo.IntegralGoods;
 import com.gomai.user.pojo.User;
+import com.gomai.utils.PageResult;
 import com.gomai.utils.ReturnMessage;
 import com.gomai.utils.ReturnMessageUtil;
 import com.gomai.utils.SbException;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/Feedback")
+@RequestMapping("/IEchangeController")
 public class IEchangeController {
     @Autowired
     private IExchangeService iExchangeService;
     @Autowired
     private IEUserService iEUserService;
-
+    @Autowired
+    private IGoodsService iGoodsService;
     /**
      *
      * 1.验证uid和type合法
@@ -33,10 +39,10 @@ public class IEchangeController {
      * 4.查询
      * 5.返回
      */
-    @GetMapping("/SelectBytype/{type}/{uid}")
-    public ReturnMessage<Object> SelectBytype(@PathVariable("type")Integer type,@PathVariable("uid")Integer uid ) {
+    @GetMapping("/SelectBytype/{type}/{uid}/{size}/{currentPage}")
+    public ReturnMessage<Object> SelectBytype(@PathVariable("type")Integer type,@PathVariable("uid")Integer uid,@PathVariable("size")Integer size,@PathVariable("currentPage")Integer currentPage) {
         //验证uid和type合法
-        if((StringUtils.isEmpty(type) || type < 0||type>3)&&(StringUtils.isEmpty(uid) || uid < 0)){
+        if((StringUtils.isEmpty(type) || type ==0||type>3)&&(StringUtils.isEmpty(uid) || uid ==0|| size == 0 || currentPage == 0)){
             throw new SbException(400, "不合法字符");
         }
         User user=iEUserService.selectUserByUid(uid);
@@ -56,10 +62,15 @@ public class IEchangeController {
             types.add(1);
             types.add(3);
         }
+        PageHelper.startPage(currentPage, size);
         List<IChangeVo> iChangeVos=iExchangeService.selectIChangeVoByTypes(uid,types);
-            return  ReturnMessageUtil.sucess(iChangeVos);
+        PageResult pageResult = new PageResult();
+        pageResult.setRows(iChangeVos);
+        pageResult.setTotal(new PageInfo(iChangeVos).getTotal());
+        ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",pageResult);
+        System.out.println(message);
+        return message;
     }
-
     /**
      *
      * 1.判断ieId是否为空
@@ -67,7 +78,7 @@ public class IEchangeController {
      * 3.执行删除
      * 4.返回
      */
-    @GetMapping("/deleteByieId/{ieId}")
+    @PostMapping("/deleteByieId/{ieId}")
     public ReturnMessage<Object> deleteByieId(Integer ieId ) {
         if(StringUtils.isEmpty(ieId)||ieId<0){
             throw  new  SbException(100,"非法字符");
@@ -82,7 +93,8 @@ public class IEchangeController {
         }
         return ReturnMessageUtil.sucess(true);
     }
-    @GetMapping("/deleteByuId/{uId}")
+
+    @PostMapping("/deleteByuId/{uId}")
     public ReturnMessage<Object> deleteByuId(Integer uId ) {
         if(StringUtils.isEmpty(uId)||uId<0){
             throw  new  SbException(100,"非法字符");
@@ -92,10 +104,58 @@ public class IEchangeController {
             throw  new SbException(400,"不存在该积分明细");
         }
 
-        int flag=this.iEUserService.deleteByuId(uId);
+        int flag=this.iExchangeService.deleteByuId(uId);
         if(flag==0){
             throw  new SbException(400,"删除失败");
         }
         return ReturnMessageUtil.sucess(true);
     }
+
+    /**
+     * 思路：买积分商品，形成积分明细，更改总积分
+     * 1.判断uId和igId是否为空
+     * 2.判断uid用户，igId商品是否存在
+     * 3.执行积分明细插入
+     * 4.更改总积分
+     * 5.返回
+     * @param uId  获取用户id
+     * @param igId  积分商品id
+     * @return
+     */
+    @PostMapping("/insertIE/{uId}/{igId}")
+    public ReturnMessage<Object> insertIE(@PathVariable("uId") Integer uId ,@PathVariable("igId") Integer igId) {
+        if((StringUtils.isEmpty(uId)||uId<0)||(StringUtils.isEmpty(igId)||igId<0)){
+            System.out.println(uId+""+igId);
+            throw  new  SbException(100,"非法字符");
+        }
+        User user=this.iEUserService.selectUserByUid(uId);
+        IntegralGoods integralGoods=this.iGoodsService.SelectByigId(igId);
+        if (StringUtils.isEmpty(user)||StringUtils.isEmpty(integralGoods)){
+            throw  new SbException(400,"非法积分商品或用户");
+        }
+
+        int flag=this.iExchangeService.insertIE(uId,igId);
+        if(flag==0){
+            throw  new SbException(400,"删除失败");
+        }
+        return ReturnMessageUtil.sucess(true);
+    }
+    /**
+     * 查询用户总积分
+     * 1.验证uid是否为空
+     * 2.验证是否存在用户
+     * 3.返回
+     */
+    @GetMapping("/selectByuId/{uId}")
+    public ReturnMessage<Object> selectByuId(Integer uId ) {
+        if(StringUtils.isEmpty(uId)||uId==0){
+            throw  new  SbException(100,"非法字符");
+        }
+        User user=this.iEUserService.selectUserByUid(uId);
+        if (StringUtils.isEmpty(user)){
+            throw  new SbException(400,"该用户不存在");
+        }
+        return ReturnMessageUtil.sucess(user);
+    }
+
 }

@@ -34,7 +34,7 @@ public class FeedbackController {
     public ReturnMessage<Object> AddFeedback(@RequestBody F_FMdia f_FMdia) {
         Feedback feedback = f_FMdia.getFeedback();
         List<FeedbackMedia> feedbackMedias = f_FMdia.getFeedbackMedia();
-        //        1. 判断feedback feedbackMedias是否为空  2. 判断uId是否为空
+        //        1. 判断feedback 是否为空  2. 判断uId是否为空
         if (StringUtils.isEmpty(feedback) && (feedback.getuId() == null || feedback.getuId() < 0)) {
             throw new SbException(400, "输入不合法");
         }
@@ -47,7 +47,11 @@ public class FeedbackController {
         if (flag == 0) {
             throw new SbException(100, "反馈信息添加失败!");
         }
+
         if (!StringUtils.isEmpty(feedbackMedias)) {
+            for(int i=0;feedbackMedias.size()<=i;i++){
+                feedbackMedias.get(i).setfId(feedback.getfId());
+            }
             int flag1 = fMediaService.FMediaAdd(feedbackMedias);
             if (flag1 == 0) {
                 throw new SbException(100, "反馈媒体添加失败!");

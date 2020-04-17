@@ -12,5 +12,4 @@ import tk.mybatis.mapper.common.Mapper;
 //tk.mybatis.mapper.common.Mapper通用mapper
 
 public interface IEUserMapper extends Mapper<User> {
-
-        }
+}
