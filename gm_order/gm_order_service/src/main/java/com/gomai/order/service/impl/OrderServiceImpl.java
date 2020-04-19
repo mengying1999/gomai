@@ -53,6 +53,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<OrderVo> searchOrderVoByUId(Integer uId, String gName) {
+        return orderMapper.searchOrderVoByUId(uId,gName);
+    }
+
+    @Override
+    public List<OrderVo> searchOrderVoBySaleUId(Integer uId, String gName) {
+        return orderMapper.searchOrderVoBySaleUId(uId,gName);
+    }
+
+    @Override
     public int updateOrder(Order order) {
         int flag = orderMapper.updateByPrimaryKeySelective(order);
         return flag;

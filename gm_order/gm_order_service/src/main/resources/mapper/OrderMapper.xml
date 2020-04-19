@@ -66,17 +66,6 @@
             <if test="oId != null and oId != '' and oId != 0">
                 and o_id=#{oId}
             </if>
-            <!--<if test="user != null and user != ''                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ">-->
-                <!--<if test="user.uId != null and user.uId != '' and user.uId != 0">-->
-                    <!--and u_id=#{user.uId}-->
-                <!--</if>-->
-            <!--</if>-->
-            <!--<if test="goodsVo.gId != null and goodsVo.gId != '' and goodsVo.gId != 0">-->
-                <!--and g_id=#{goodsVo.gId}-->
-            <!--</if>-->
-            <!--<if test="userAddress.uaId != null and userAddress.uaId != '' and userAddress.uaId != 0">-->
-                <!--and ua_id=#{userAddress.uaId}-->
-            <!--</if>-->
             <if test="oStatus != null and oStatus != '' and oStatus != 0">
                 and o_status=#{oStatus}
             </if>
@@ -99,21 +88,21 @@
             <if test="0 == 0">
                 and goods.g_id = order_form.g_id
             </if>
-            <!--<if test="user != null and user != ''                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ">-->
-            <!--<if test="user.uId != null and user.uId != '' and user.uId != 0">-->
-            <!--and u_id=#{user.uId}-->
-            <!--</if>-->
-            <!--</if>-->
-            <!--<if test="goodsVo.gId != null and goodsVo.gId != '' and goodsVo.gId != 0">-->
-            <!--and g_id=#{goodsVo.gId}-->
-            <!--</if>-->
-            <!--<if test="userAddress.uaId != null and userAddress.uaId != '' and userAddress.uaId != 0">-->
-            <!--and ua_id=#{userAddress.uaId}-->
-            <!--</if>-->
             <if test="oStatus != null and oStatus != '' and oStatus != 0">
                 and o_status=#{oStatus}
             </if>
         </where>
+        order by o_create_time desc
+    </select>
+
+    <select id="searchOrderVoByUId" resultMap="com.gomai.order.mapper.OrderMapper.orderVo">
+    <bind name="name" value="'%' + gName +'%'" />
+    select order_form.* from order_form, goods where goods.g_id = order_form.g_id and order_form.u_id = #{uId} and goods.g_name like #{name}
+    order by o_create_time desc
+</select>
+    <select id="searchOrderVoBySaleUId" resultMap="com.gomai.order.mapper.OrderMapper.orderVo">
+        <bind name="name" value="'%' + gName +'%'" />
+        select order_form.* from order_form, goods where goods.g_id = order_form.g_id and goods.u_id = #{uId} and goods.g_name like #{name}
         order by o_create_time desc
     </select>
 </mapper>
