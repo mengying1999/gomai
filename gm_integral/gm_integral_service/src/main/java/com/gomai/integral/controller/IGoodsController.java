@@ -1,11 +1,14 @@
 package com.gomai.integral.controller;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.gomai.integral.service.IEUserService;
 import com.gomai.integral.service.IExchangeService;
 import com.gomai.integral.service.IGoodsService;
 import com.gomai.integral.vo.IChangeVo;
 import com.gomai.intergral.pojo.IntegralGoods;
 import com.gomai.user.pojo.User;
+import com.gomai.utils.PageResult;
 import com.gomai.utils.ReturnMessage;
 import com.gomai.utils.ReturnMessageUtil;
 import com.gomai.utils.SbException;
@@ -75,16 +78,36 @@ public class IGoodsController {
      * 4.查询
      * 5.返回
      */
-    @GetMapping("/SelectByigName/{igName}")
-    public ReturnMessage<Object> SelectByigName(@PathVariable("igName")String igName) {
+    @GetMapping("/SelectByigName/{igName}/{size}/{currentPage}")
+    public ReturnMessage<Object> SelectByigName(@PathVariable("igName")String igName,@PathVariable("size")Integer size,@PathVariable("currentPage")Integer currentPage) {
         //验证uid和type合法
         if(igName==null||igName.equals("")){
             throw new SbException(400, "商品名不能为空");
         }
+        PageHelper.startPage(currentPage, size);
         List<IntegralGoods> integralGoods=iGoodsService.SelectByigName(igName);
         if(StringUtils.isEmpty(integralGoods)){
             throw  new  SbException(100,"不存在该类型商品");
         }
-        return  ReturnMessageUtil.sucess(integralGoods);
+        PageResult pageResult = new PageResult();
+        pageResult.setRows(integralGoods);
+        pageResult.setTotal(new PageInfo(integralGoods).getTotal());
+        ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",pageResult);
+        System.out.println(message);
+        return message;
+    }
+    /**
+     *
+     * 1.验证igId是否合法
+     * 2.查询商品是否存在
+     *
+     * 4.查询
+     * 5.返回
+     */
+    @GetMapping("/SelectNew")
+    public ReturnMessage<Object> SelectNew() {
+        //验证uid和type合法
+       List<IntegralGoods>  integralGoods=this.iGoodsService.SelectNew();
+        return ReturnMessageUtil.sucess(integralGoods);
     }
 }

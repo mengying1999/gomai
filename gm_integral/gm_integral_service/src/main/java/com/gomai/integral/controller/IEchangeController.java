@@ -79,7 +79,7 @@ public class IEchangeController {
      * 4.返回
      */
     @PostMapping("/deleteByieId/{ieId}")
-    public ReturnMessage<Object> deleteByieId(Integer ieId ) {
+    public ReturnMessage<Object> deleteByieId(@PathVariable("ieId")Integer ieId ) {
         if(StringUtils.isEmpty(ieId)||ieId<0){
             throw  new  SbException(100,"非法字符");
         }
@@ -95,7 +95,7 @@ public class IEchangeController {
     }
 
     @PostMapping("/deleteByuId/{uId}")
-    public ReturnMessage<Object> deleteByuId(Integer uId ) {
+    public ReturnMessage<Object> deleteByuId(@PathVariable("uId")Integer uId ) {
         if(StringUtils.isEmpty(uId)||uId<0){
             throw  new  SbException(100,"非法字符");
         }
@@ -150,7 +150,7 @@ public class IEchangeController {
      * 3.返回
      */
     @GetMapping("/selectByuId/{uId}")
-    public ReturnMessage<Object> selectByuId(Integer uId ) {
+    public ReturnMessage<Object> selectByuId(@PathVariable("uId")Integer uId ) {
         if(StringUtils.isEmpty(uId)||uId==0){
             throw  new  SbException(100,"非法字符");
         }

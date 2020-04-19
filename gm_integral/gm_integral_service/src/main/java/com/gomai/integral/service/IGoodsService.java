@@ -14,4 +14,6 @@ public interface IGoodsService {
     public List<IntegralGoods> selecetByigType(String igType);
 
     public List<IntegralGoods> SelectByigName(String igName);
+
+    public List<IntegralGoods> SelectNew();
 }

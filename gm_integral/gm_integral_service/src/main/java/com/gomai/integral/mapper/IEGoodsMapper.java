@@ -3,6 +3,7 @@ package com.gomai.integral.mapper;
 import com.gomai.goods.pojo.Goods;
 import com.gomai.goods.pojo.GoodsMedia;
 import com.gomai.integral.vo.GoodsVo;
+import com.gomai.intergral.pojo.IntegralGoods;
 import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
@@ -29,4 +30,6 @@ public interface IEGoodsMapper extends Mapper<Goods> {
 
     @Select("select gm_id gmId,g_id gId , gm_url gmUrl,gm_type gmType from goods_media where g_id= #{gId}")
     public List<GoodsMedia> selectGoodsMediaByGId(Integer gId);
+
+
 }

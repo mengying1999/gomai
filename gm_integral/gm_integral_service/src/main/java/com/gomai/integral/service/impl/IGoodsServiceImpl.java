@@ -37,4 +37,10 @@ public class IGoodsServiceImpl implements IGoodsService {
         List<IntegralGoods> integralGoodsList = this.iGoodsMapper.selectByExample(example);
         return integralGoodsList;
     }
+
+    @Override
+    public List<IntegralGoods> SelectNew() {
+        List<IntegralGoods> integralGoods=this.iGoodsMapper.selectNew();
+        return integralGoods;
+    }
 }
