@@ -24,4 +24,7 @@ public interface OrderService {
     public List<Order> queryOrderByOrder(Order order);
 
     public List<Order> queryOrderBySaleUId(Integer uId, Integer oId,Integer oStatus);
+
+    public List<OrderVo> searchOrderVoByUId(Integer uId, String gName);
+    public List<OrderVo> searchOrderVoBySaleUId(Integer uId, String gName);
 }

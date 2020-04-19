@@ -5,6 +5,8 @@ import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.alipay.api.response.AlipayTradeRefundResponse;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.gomai.goods.pojo.Goods;
 import com.gomai.goods.pojo.Unshelve;
 import com.gomai.intergral.pojo.IntegralExchange;
@@ -277,6 +279,40 @@ public class OrderController {
         System.out.println(message);
         return message;
     }
+
+    /**
+     * 模糊查询传入参数uId,gName,size,currentPage,isBuy返回结果：List<OrderVo>
+     *     1.验证参数
+     *     2.根据uId查询是否存在该用户
+     *     3.查询
+     *     4.返回
+     */
+    @GetMapping(value = "/searchOrder/{uId}/{gName}/{size}/{currentPage}/{isBuy}")
+    @ResponseBody
+    public ReturnMessage<Object> searchOrder(@PathVariable("uId")Integer uId,@PathVariable("gName")String gName,@PathVariable("size")Integer size,@PathVariable("currentPage")Integer currentPage,@PathVariable("isBuy") Boolean isBuy) throws Exception{
+        if (uId < 0 || size < 0 || currentPage < 0 ){
+            throw new SbException(100, "参数错误!");
+        }
+        User user = oUserService.queryUserByUId(uId);
+        if (StringUtils.isEmpty(user)){
+            throw new SbException(100, "不存在该用户!");
+        }
+        List<OrderVo> orderVos = new ArrayList<OrderVo>();
+        PageHelper.startPage(currentPage, size);
+        if(isBuy){//买家
+            orderVos  = orderService.searchOrderVoByUId(uId,gName);
+        }else {//卖家
+            orderVos  = orderService.searchOrderVoBySaleUId(uId,gName);
+        }
+        PageResult pageResult = new PageResult();
+        pageResult.setRows(orderVos);
+        pageResult.setTotal(new PageInfo(orderVos).getTotal());
+        ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",pageResult);
+        System.out.println(message);
+        return message;
+    }
+
+
 
     /**
      * 发货请求
@@ -684,7 +720,7 @@ public class OrderController {
         //4. 退货退款
         if (oCancelType == 3 || oCancelType == 4){
             //调用支付宝退款函数
-            alipayReturn(oId);
+            delayService.alipayReturn(oId);
         }
         ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",true);
         System.out.println(message);
@@ -805,7 +841,11 @@ public class OrderController {
             throw new SbException(100, "参数错误!");
         }
 //        退款函数
-        alipayReturn(orderReturn.getoId());
+        boolean temp = delayService.alipayReturn(orderReturn.getoId());
+        if (!temp){
+            throw new SbException(100, "退款失败!");
+        }
+//        alipayReturn();
         //更改退货退款状态
         orderReturn.setOrStatus(2);
         int flag= orderReturnService.updateReturnService (orderReturn);
@@ -820,41 +860,6 @@ public class OrderController {
         ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",true);
         System.out.println(message);
         return message;
-    }
-
-
-    //
-    public void  alipayReturn(Integer oId)throws Exception{
-        AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.gatewayUrl, AlipayConfig.app_id, AlipayConfig.merchant_private_key, "json", AlipayConfig.charset, AlipayConfig.alipay_public_key, AlipayConfig.sign_type);
-        //设置请求参数
-        AlipayTradeRefundRequest alipayRequest = new AlipayTradeRefundRequest();
-        Order temp = new Order();
-        temp.setoId(oId);
-        List<OrderVo> orderVos = orderService.queryOrderVoByOthers(temp);
-        //商户订单号，商户网站订单系统中唯一订单号
-        String out_trade_no = "" + oId;
-        //支付宝交易号
-        String trade_no = orderVos.get(0).getoTradeNo();
-        //请二选一设置
-        //需要退款的金额，该金额不能大于订单金额，必填
-        String refund_amount = ""+ orderVos.get(0).getGoodsVo().getgPrice();
-        //退款的原因说明
-        String refund_reason = "";
-        //标识一次退款请求，同一笔交易多次退款需要保证唯一，如需部分退款，则此参数必传
-        String out_request_no = "";
-//
-        alipayRequest.setBizContent("{\"out_trade_no\":\""+ out_trade_no +"\","
-                + "\"trade_no\":\""+ trade_no +"\","
-                + "\"refund_amount\":\""+ refund_amount +"\","
-                + "\"refund_reason\":\""+ refund_reason +"\","
-                + "\"out_request_no\":\""+ out_request_no +"\"}");
-
-        //请求
-        AlipayTradeRefundResponse response;
-        response = alipayClient.execute(alipayRequest);
-        if (!response.isSuccess()) {
-            throw new SbException(100, "退款失败");
-        }
     }
     /*
         拒绝申请
@@ -927,7 +932,6 @@ public class OrderController {
         return message;
     }
 
-
     public void check(Integer uId,Integer oId,Integer oStatus, Boolean isBuy){
         if (StringUtils.isEmpty(uId) || uId == 0 || StringUtils.isEmpty(oId) || oId == 0 || StringUtils.isEmpty(oStatus) || oStatus == 0 || StringUtils.isEmpty(isBuy)) {
             throw new SbException(100, "参数错误!");
@@ -964,5 +968,28 @@ public class OrderController {
                 throw new SbException(100, "无该订单!");
             }
         }
+    }
+
+    /**
+     * 根据oId查询订单详情
+     */
+    @GetMapping(value = "/getOrderDetail/{oId}")
+    @ResponseBody
+    public ReturnMessage<Object> getOrderDetail(@PathVariable("oId")Integer oId){
+        if (oId < 0){
+            throw new SbException(100, "参数错误!");
+        }
+        Order order = new Order();
+        order.setoId(oId);
+        List<OrderVo> orderVos = orderService.queryOrderVoByOthers(order);
+        if (CollectionUtils.isEmpty(orderVos)){
+            throw new SbException(100, "查询结果为空!");
+        }
+        if (StringUtils.isEmpty(orderVos.get(0))){
+            throw new SbException(100, "查询结果为空!");
+        }
+        ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",orderVos.get(0));
+        System.out.println(message);
+        return message;
     }
 }

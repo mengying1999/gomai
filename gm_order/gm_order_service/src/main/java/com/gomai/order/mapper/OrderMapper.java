@@ -14,4 +14,8 @@ public interface OrderMapper extends Mapper<Order> {
     public List<OrderVo> selectOrderVoBySaleUId(OrderVo orderVo);
 
     public List<Order> selectOrderBySaleUId(@Param("uId") Integer uId, @Param("oId")Integer oId,@Param("oStatus") Integer oStatus);
+
+    public List<OrderVo> searchOrderVoByUId(@Param("uId")Integer uId, @Param("gName")String gName);
+
+    public List<OrderVo> searchOrderVoBySaleUId(@Param("uId")Integer uId, @Param("gName")String gName);
 }

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.DelayQueue;
 
+import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.request.AlipayTradeRefundRequest;
@@ -258,7 +259,7 @@ public class DelayService {
             this.remove(target);
         }
     }
-    public void  alipayReturn(Integer oId)throws Exception{
+    public boolean  alipayReturn(Integer oId){
         AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.gatewayUrl, AlipayConfig.app_id, AlipayConfig.merchant_private_key, "json", AlipayConfig.charset, AlipayConfig.alipay_public_key, AlipayConfig.sign_type);
         //设置请求参数
         AlipayTradeRefundRequest alipayRequest = new AlipayTradeRefundRequest();
@@ -285,9 +286,24 @@ public class DelayService {
 
         //请求
         AlipayTradeRefundResponse response;
-        response = alipayClient.execute(alipayRequest);
-        if (!response.isSuccess()) {
-            throw new SbException(100, "退款失败");
+        try {
+            response = alipayClient.execute(alipayRequest);
+            if (!response.isSuccess()) {
+                String returnStr = response.getSubMsg();//失败会返回错误信息
+                System.out.println(returnStr);
+            }
+            if(response.isSuccess()){
+                System.out.println("退款请求发送成功");
+            }
+            //判断退款是否成功
+            if(response.getFundChange().equals("Y")){
+                System.out.println("退款成功");
+            }
+            return response.isSuccess();
+        } catch (AlipayApiException e) {
+            System.out.println("11111111111111111111111111111111111111111111111");
+            e.printStackTrace();
         }
+        return false;
     }
 }
