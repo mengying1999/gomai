@@ -19,6 +19,7 @@ public class Unshelve {//下架表
     public Unshelve() {
     }
 
+
     public Unshelve(Integer gId, String unReason, Date unCreateTime) {
         this.gId = gId;
         this.unReason = unReason;
@@ -56,6 +57,7 @@ public class Unshelve {//下架表
     public void setUnCreateTime(Date unCreateTime) {
         this.unCreateTime = unCreateTime;
     }
+
 
     @Override
     public String toString() {

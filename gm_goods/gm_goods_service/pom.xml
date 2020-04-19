@@ -57,6 +57,11 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.gomai.common</groupId>
+            <artifactId>gm_common</artifactId>
+            <version>${gomai.latest.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.didispace</groupId>
             <artifactId>swagger-butler-core</artifactId>
             <version>${swagger.version}</version>

@@ -2,7 +2,7 @@ package com.gomai.goods.pojo;
 
 import javax.persistence.*;
 @Entity
-@Table(name="GoodsMedia")
+@Table(name="goods_media")
 public class GoodsMedia {//商品媒体表
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
