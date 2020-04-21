@@ -8,7 +8,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "orderComment")
-public class orderComment {
+public class OrderComment {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "oc_id")
@@ -19,14 +19,17 @@ public class orderComment {
     private Integer uId;  //用户id
     @Column(name = "oc_content")
     private String ocContent; // 评论
+    @Column(name = "oc_time")
+    private String ocTime;
 
-    public orderComment() {
+    public OrderComment() {
     }
 
-    public orderComment(Integer oId, Integer uId, String ocContent) {
+    public OrderComment(Integer oId, Integer uId, String ocContent, String ocTime) {
         this.oId = oId;
         this.uId = uId;
         this.ocContent = ocContent;
+        this.ocTime = ocTime;
     }
 
     public Integer getOcId() {
@@ -61,13 +64,22 @@ public class orderComment {
         this.ocContent = ocContent;
     }
 
+    public String getOcTime() {
+        return ocTime;
+    }
+
+    public void setOcTime(String ocTime) {
+        this.ocTime = ocTime;
+    }
+
     @Override
     public String toString() {
-        return "orderComment{" +
+        return "OrderComment{" +
                 "ocId=" + ocId +
                 ", oId=" + oId +
                 ", uId=" + uId +
                 ", ocContent='" + ocContent + '\'' +
+                ", ocTime='" + ocTime + '\'' +
                 '}';
     }
 }

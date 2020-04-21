@@ -11,6 +11,10 @@ spring:
       maximum-pool-size: 30
       minimum-idle: 10
     driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis:
+  mapperLocations: classpath:mapper/*Mapper.xml
+  configuration:
+    map-underscore-to-camel-case: true
 eureka:
   client:
     service-url:

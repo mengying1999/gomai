@@ -14,11 +14,11 @@ public class FeedbackMedia {
     @Column(name = "fm_url")
     private String fmUrl; //反馈url
     @Column(name = "fm_type")
-    private String fmType; //媒体的类型
+    private Integer fmType; //媒体的类型
     public FeedbackMedia() {
     }
 
-    public FeedbackMedia(Integer fId, String fmUrl, String fmType) {
+    public FeedbackMedia(Integer fId, String fmUrl, Integer fmType) {
         this.fId = fId;
         this.fmUrl = fmUrl;
         this.fmType = fmType;
@@ -48,11 +48,11 @@ public class FeedbackMedia {
         this.fmUrl = fmUrl;
     }
 
-    public String getFmType() {
+    public Integer getFmType() {
         return fmType;
     }
 
-    public void setFmType(String fmType) {
+    public void setFmType(Integer fmType) {
         this.fmType = fmType;
     }
 

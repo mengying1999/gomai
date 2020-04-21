@@ -8,7 +8,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "oderEvaluationMedia")
-public class oderEvaluationMedia {
+public class OrderEvaluationMedia {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "oem_id")
@@ -18,10 +18,10 @@ public class oderEvaluationMedia {
     @Column(name = "oem_url")
     private String oemUrl;  //url
 
-    public oderEvaluationMedia() {
+    public OrderEvaluationMedia() {
     }
 
-    public oderEvaluationMedia(Integer oId, String oemUrl) {
+    public OrderEvaluationMedia(Integer oId, String oemUrl) {
         this.oId = oId;
         this.oemUrl = oemUrl;
     }
