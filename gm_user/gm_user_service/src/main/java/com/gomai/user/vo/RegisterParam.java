@@ -1,6 +1,5 @@
 package com.gomai.user.vo;
 
-import javax.validation.constraints.Pattern;
 
 public class RegisterParam {
     private String uName;
