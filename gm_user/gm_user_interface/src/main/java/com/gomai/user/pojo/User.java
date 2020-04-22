@@ -1,6 +1,9 @@
 package com.gomai.user.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 /**
@@ -16,6 +19,7 @@ public class User {
     private Integer uId; //主键
     @Column(name = "u_name")
     private String uName; //用户名
+    @JsonIgnore //在对象系列化json字符串时，忽略该属性
     @Column(name = "u_password")
     private String uPassword;  //密码
     @Column(name = "u_sex")
@@ -31,6 +35,7 @@ public class User {
     @Column(name = "u_birthday")
     private Date uBirthday;  //生日
     @Column(name = "u_phone")
+    @Pattern(regexp = "^1[35678]\\d{9}$", message = "手机号格式不正确")
     private String uPhone; //电话号码
     @Column(name = "u_auto_response")
     private String uAutoResponse; //自动回复

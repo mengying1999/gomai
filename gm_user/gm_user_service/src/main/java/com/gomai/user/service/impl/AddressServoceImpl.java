@@ -4,7 +4,9 @@ import com.gomai.user.mapper.AddressMapper;
 import com.gomai.user.pojo.UserAddress;
 import com.gomai.user.service.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AddressServoceImpl implements AddressService {
     @Autowired
     private AddressMapper addressMapper;

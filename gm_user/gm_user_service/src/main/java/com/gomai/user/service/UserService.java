@@ -10,4 +10,8 @@ public interface UserService {
     public User selectUserByuName(String uName);
 
     public int insetrtuser(User user);
+    public String sendVerifyCode(String phone);
+    public Boolean register(User user, String code);
+    public Boolean checkData(String data, Integer type);
+    public User queryBy(String uName, String uPassword);
 }

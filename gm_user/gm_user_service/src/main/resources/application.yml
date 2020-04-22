@@ -1,10 +1,14 @@
 server:
   port: 8083
 spring:
+  redis:
+    host: 117.78.0.140
+    port: 6379
+    timeout: 5000ms
   application:
-    name: comment_service
+    name: user-service
   datasource:
-    url: jdbc:mysql://117.78.0.140:3306/gomai?serverTimezone=UTC&characterEncoding=utf8&useUnicode=true&useSSL=false
+    url: jdbc:mysql://117.78.0.140:3306/gomai?&serverTimezone=Asia/Shanghai&characterEncoding=utf8&useUnicode=true&useSSL=false
     username: root
     password: 123456
     #验证连接是否有效。此参数必须设置为非空字符串，下面三项设置成true才能生效
@@ -19,6 +23,9 @@ spring:
       maximum-pool-size: 30
       minimum-idle: 10
     driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
 eureka:
   client:
     service-url:
@@ -29,3 +36,6 @@ eureka:
     prefer-ip-address: true
     ip-address: 127.0.0.1
     instance-id: ${spring.application.name}:${server.port}
+jackson:
+  date-format: yyyy-MM-dd HH:mm:ss
+  time-zone: GMT+8

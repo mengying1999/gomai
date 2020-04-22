@@ -22,6 +22,8 @@
         <module>gm_registry</module>
         <module>gm_api_gateway</module>
         <module>gm_upload</module>
+        <module>gomai_auth</module>
+        <module>gm_auth</module>
     </modules>
     <packaging>pom</packaging>
 

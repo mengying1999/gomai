@@ -1,0 +1,37 @@
+server:
+  port: 8090
+spring:
+  application:
+    name: auth_service
+#  datasource:
+#    url: jdbc:mysql://117.78.0.140:3306/gomai?&serverTimezone=Asia/Shanghai&characterEncoding=utf8&useUnicode=true&useSSL=false
+#    username: root
+#    password: 123456
+#    #验证连接是否有效。此参数必须设置为非空字符串，下面三项设置成true才能生效
+#    validationQuery: SELECT 1
+#    #指明连接是否被空闲连接回收器(如果有)进行检验.如果检测失败,则连接将被从池中去除.
+#    testWhileIdle: true
+#    #指明是否在从池中取出连接前进行检验,如果检验失败,则从池中去除连接并尝试取出另一个
+#    testOnBorrow: true
+#    #指明是否在归还到池中前进行检验
+#    testOnReturn: false
+#    hikari:
+#      maximum-pool-size: 30
+#      minimum-idle: 10
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
+    registry-fetch-interval-seconds: 10
+  instance:
+    lease-renewal-interval-in-seconds: 5 # 每隔5秒发送一次心跳
+    lease-expiration-duration-in-seconds: 10 # 10秒不发送就过期
+gomai:
+  jwt:
+    secret: gomai@Login(Auth}*^31)&gomai% # 登录校验的密钥
+    pubKeyPath: G:\\Study\\专业设计\\rsa\\rsa.pub # 公钥地址
+    priKeyPath: G:\\Study\\专业设计\\rsa\\rsa.pri # 私钥地址
+    expire: 30 # 过期时间,单位分钟
+    cookieMaxAge: 1800
+    cookieName: GM_TOKEN

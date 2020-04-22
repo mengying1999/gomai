@@ -17,13 +17,16 @@ zuul:
   retryable: true
   routes:
     goods_service: /goods/** #添加商品微服务的路由
-    user_service: /user/** #添加用户微服务的路由
+    user-service: /user/** #添加用户微服务的路由
     chat_service: /chat/** #添加聊天微服务的路由
     comment_service: /comment/** #添加评论微服务的路由
     community_service: /community/** #添加社区微服务的路由
     feedback_service: /feedback/** #添加用户微服务的路由
     integral_service: /integral/** #添加用户微服务的路由
     order_service: /order/** #添加用户微服务的路由
+    auth_service: /auth/** # 授权中心微服务
+  add-host-header: true
+  sensitive-headers: #全部服务忽略敏感头(全部服务都可以传递cookie)
 ribbon:
   ConnectTimeout: 2500 # 连接超时时间(ms)
   ReadTimeout: 20000 # 通信超时时间(ms)
@@ -46,4 +49,11 @@ swagger:
   swagger:
     butler:
       #       generate-routes: goods_service
-      generate-routes: goods_service,user_service,chat_service,comment_service,community_service,feedback_service,integral_service,order_service
+      generate-routes: goods_service,user-service,chat_service,comment_service,community_service,feedback_service,integral_service,order_service
+gomai:
+  jwt:
+    pubKeyPath: G:\\Study\\专业设计\\rsa\\rsa.pub  # 公钥地址
+    cookieName: GM_TOKEN
+  filter:   #白名单路径
+    allowPaths:
+    - /api/auth
