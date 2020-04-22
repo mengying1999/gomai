@@ -14,10 +14,10 @@ public class ReportMedia {
     @Column(name = "rm_url")
     private String rmUrl; //举报url
     @Column(name = "rm_type")
-    private String rmType; //媒体的类型
+    private Integer rmType; //媒体的类型
     public ReportMedia() {
     }
-    public ReportMedia(Integer rId, String rmUrl, String rmType) {
+    public ReportMedia(Integer rId, String rmUrl, Integer rmType) {
         this.rId = rId;
         this.rmUrl = rmUrl;
         this.rmType = rmType;
@@ -47,11 +47,11 @@ public class ReportMedia {
         this.rmUrl = rmUrl;
     }
 
-    public String getRmType() {
+    public Integer getRmType() {
         return rmType;
     }
 
-    public void setRmType(String rmType) {
+    public void setRmType(Integer rmType) {
         this.rmType = rmType;
     }
 
