@@ -49,11 +49,15 @@ swagger:
   swagger:
     butler:
       #       generate-routes: goods_service
-      generate-routes: goods_service,user-service,chat_service,comment_service,community_service,feedback_service,integral_service,order_service
+      generate-routes: auth_service,goods_service,user-service,chat_service,comment_service,community_service,feedback_service,integral_service,order_service
 gomai:
   jwt:
-    pubKeyPath: G:\\Study\\专业设计\\rsa\\rsa.pub  # 公钥地址
+    pubKeyPath: C:\\rsa\\rsa.pub  # 公钥地址
     cookieName: GM_TOKEN
   filter:   #白名单路径
     allowPaths:
     - /api/auth
+    - 10010
+    - /user
+    - /comment
+    - /feedback

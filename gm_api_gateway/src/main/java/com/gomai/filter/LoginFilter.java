@@ -56,13 +56,13 @@ public class LoginFilter extends ZuulFilter {
         HttpServletRequest request = requestContext.getRequest();
         //获取请求路径(带域名的路径)
         String url = request.getRequestURL().toString();
-
+        System.out.println(url);
         for (String allowPath : allowPaths) {
             if (StringUtils.contains(url, allowPath)) {
                 return false;
             }
         }
-
+        System.out.println("wwwww");
         //返回true表示要执行此过虑器
         return true;
     }

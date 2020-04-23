@@ -30,8 +30,8 @@ eureka:
 gomai:
   jwt:
     secret: gomai@Login(Auth}*^31)&gomai% # 登录校验的密钥
-    pubKeyPath: G:\\Study\\专业设计\\rsa\\rsa.pub # 公钥地址
-    priKeyPath: G:\\Study\\专业设计\\rsa\\rsa.pri # 私钥地址
+    pubKeyPath: C:\\rsa\\rsa.pub # 公钥地址
+    priKeyPath: C:\\rsa\\rsa.pri # 私钥地址
     expire: 30 # 过期时间,单位分钟
     cookieMaxAge: 1800
     cookieName: GM_TOKEN
