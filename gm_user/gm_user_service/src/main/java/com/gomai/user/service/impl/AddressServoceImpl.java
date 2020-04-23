@@ -6,6 +6,8 @@ import com.gomai.user.service.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AddressServoceImpl implements AddressService {
     @Autowired
@@ -33,5 +35,11 @@ public class AddressServoceImpl implements AddressService {
     public int delad(UserAddress userAddress) {
         int flag=this.addressMapper.delete(userAddress);
         return flag;
+    }
+
+    @Override
+    public List<UserAddress> selectAdByUid(UserAddress userAddress) {
+        List<UserAddress> userAddresses=this.addressMapper.select(userAddress);
+        return userAddresses;
     }
 }

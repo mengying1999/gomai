@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gomai.comment.mapper.OrderCommentMapper">
+    <resultMap type="com.gomai.comment.vo.OcorderVo" id="orderVo">
+        <id property="oId" column="o_id"></id>
+        <result property="oStatus" column="o_status"></result>
+        <result property="oCancelType" column="o_cancel_type"></result>
+        <result property="oEvaluation" column="o_evaluation"></result>
+        <result property="oEvaluationAdd" column="o_evaluation_add"></result>
+        <result property="oCancelReason" column="o_cancel_reason"></result>
+        <result property="oCreateTime" column="o_create_time"></result>
+        <result property="oPayTime" column="o_pay_time"></result>
+        <result property="oRemindShipments" column="o_remind_shipments"></result>
+        <result property="oShipmentsTime" column="o_shipments_time"></result>
+        <result property="oRemindReceive" column="o_remind_receive"></result>
+        <result property="oReceiveTime" column="o_receive_time"></result>
+        <result property="oEvaluationTime" column="o_evaluation_time"></result>
+        <result property="oEvaluationAddTime" column="o_evaluation_add_time"></result>
+        <result property="oSellDelete" column="o_sell_delete"></result>
+        <result property="oTradeNo" column="o_trade_no"></result>
+        <result property="oBuyDelete" column="o_buy_delete"></result>
+        <association property="goodsVo" column="g_id" select="com.gomai.order.mapper.OGoodsMapper.selectGoodsVoByGId"></association>
+        <collection property="commentMedias" column="o_id" select="com.gomai.comment.mapper.CommentMidaMapper.selectOEM"></collection>
+        <collection property="commentVos" column="o_id" select="com.gomai.comment.mapper.OrderCommentMapper.selectcommentvoByoId"></collection>
+    </resultMap>
+    <resultMap id="commentVo" type="com.gomai.comment.vo.CommentVo">
+        <id property="ocId" column="oc_id"></id>
+        <result property="oId" column="o_id"></result>
+        <result property="uId" column="u_id"></result>
+        <result property="ocContent" column="oc_content"></result>
+        <association property="user" column="u_id" select="com.gomai.comment.mapper.OcUserMapper.selectByPrimaryKey"></association>
+    </resultMap>
+    <select id="selectcommentvoByoId" resultMap="com.gomai.comment.mapper.OrderCommentMapper.commentVo">
+        select * from order_comment where o_id=#{oId}
+    </select>
+    <select id="selectorderByoid" resultMap="com.gomai.comment.mapper.OrderCommentMapper.orderVo">
+        select * from order_form where o_id=#{oId}
+    </select>
+</mapper>

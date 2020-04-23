@@ -13,7 +13,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public int FeedbackAdd(Feedback feedback) {
-        int flag=this.feedbackMapper.insert(feedback);
+        int flag=this.feedbackMapper.insertFeedback(feedback);
         return flag;
     }
 }

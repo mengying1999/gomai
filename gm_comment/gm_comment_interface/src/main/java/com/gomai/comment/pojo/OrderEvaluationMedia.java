@@ -7,7 +7,7 @@ import javax.persistence.*;
  * 评论媒体表
  */
 @Entity
-@Table(name = "oderEvaluationMedia")
+@Table(name = "oder_evaluation_media")
 public class OrderEvaluationMedia {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -17,13 +17,16 @@ public class OrderEvaluationMedia {
     private Integer oId; //用户id
     @Column(name = "oem_url")
     private String oemUrl;  //url
+    @Column(name = "oem_type")
+    private Integer oemType;  //url
 
     public OrderEvaluationMedia() {
     }
 
-    public OrderEvaluationMedia(Integer oId, String oemUrl) {
+    public OrderEvaluationMedia(Integer oId, String oemUrl, Integer oemType) {
         this.oId = oId;
         this.oemUrl = oemUrl;
+        this.oemType = oemType;
     }
 
     public Integer getOemId() {
@@ -48,6 +51,14 @@ public class OrderEvaluationMedia {
 
     public void setOemUrl(String oemUrl) {
         this.oemUrl = oemUrl;
+    }
+
+    public Integer getOemType() {
+        return oemType;
+    }
+
+    public void setOemType(Integer oemType) {
+        this.oemType = oemType;
     }
 
     @Override

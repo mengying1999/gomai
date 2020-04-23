@@ -47,9 +47,8 @@ public class FeedbackController {
         if (flag == 0) {
             throw new SbException(100, "反馈信息添加失败!");
         }
-
         if (!StringUtils.isEmpty(feedbackMedias)) {
-            for(int i=0;feedbackMedias.size()<=i;i++){
+            for(int i=0;feedbackMedias.size()>i;i++){
                 feedbackMedias.get(i).setfId(feedback.getfId());
             }
             int flag1 = fMediaService.FMediaAdd(feedbackMedias);

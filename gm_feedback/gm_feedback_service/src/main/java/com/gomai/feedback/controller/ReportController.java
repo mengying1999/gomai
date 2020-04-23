@@ -46,7 +46,7 @@ public class ReportController {
             throw new SbException(100, "举报信息添加失败!");
         }
         if (!StringUtils.isEmpty(reportMedias)) {
-            for(int i=0;reportMedias.size()<=i;i++){
+            for(int i=0;reportMedias.size()>i;i++){
                 reportMedias.get(i).setrId(report.getrId());
             }
             int flag1 = rMediaService.RMediaAdd(reportMedias);

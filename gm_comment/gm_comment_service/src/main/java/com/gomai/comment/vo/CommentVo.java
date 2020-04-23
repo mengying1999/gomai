@@ -1,35 +1,36 @@
-package com.gomai.comment.pojo;
+package com.gomai.comment.vo;
 
-import javax.persistence.*;
+import com.gomai.user.pojo.User;
 
-/**
- *
- * 评论表
- */
-@Entity
-@Table(name = "order_comment")
-public class OrderComment {
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "oc_id")
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+public class CommentVo {
+
     private Integer ocId; //主键
-    @Column(name = "o_id")
+
     private Integer oId; //订单表
-    @Column(name = "u_id")
+
     private Integer uId;  //用户id
-    @Column(name = "oc_content")
+
     private String ocContent; // 评论
-    @Column(name = "oc_time")
+
     private String ocTime;
 
-    public OrderComment() {
+    private User user;
+
+    public CommentVo() {
     }
 
-    public OrderComment(Integer oId, Integer uId, String ocContent, String ocTime) {
+    public CommentVo(Integer ocId, Integer oId, Integer uId, String ocContent, String ocTime, User user) {
+        this.ocId = ocId;
         this.oId = oId;
         this.uId = uId;
         this.ocContent = ocContent;
         this.ocTime = ocTime;
+        this.user = user;
     }
 
     public Integer getOcId() {
@@ -72,15 +73,23 @@ public class OrderComment {
         this.ocTime = ocTime;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public String toString() {
-        return "OrderComment{" +
+        return "CommentVo{" +
                 "ocId=" + ocId +
                 ", oId=" + oId +
                 ", uId=" + uId +
                 ", ocContent='" + ocContent + '\'' +
                 ", ocTime='" + ocTime + '\'' +
+                ", user=" + user +
                 '}';
     }
 }
-

@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/Address")
 public class AddressController {
@@ -86,7 +88,7 @@ public class AddressController {
      * 5.返回
      */
 
-    @PostMapping("/DelAd")
+    @PostMapping("/DelAd/{uaId}")
     public ReturnMessage<Object> EditAd(@PathVariable() Integer uaId){
 
         if (StringUtils.isEmpty(uaId)||uaId==0) {
@@ -102,5 +104,28 @@ public class AddressController {
         }
 
         return ReturnMessageUtil.sucess(true);
+    }
+    /**
+     * 1.验证userAddress是否为空
+     * 2.查询用户是否存在
+     *3.判断收货人姓名，地址是否为空
+     * 4.更新
+     * 5.返回
+     */
+
+    @GetMapping("/SelADs/{uId}")
+    public ReturnMessage<Object> SelADs(@PathVariable() Integer uId){
+
+        if (StringUtils.isEmpty(uId)||uId==0) {
+            throw new SbException(400, "输入不合法");
+        }
+        User user=this.userService.selectUserByUid(uId);
+        if(StringUtils.isEmpty(user)){
+            throw new SbException(400, "不存在该用户");
+        }
+        UserAddress userAddress=new UserAddress();
+        userAddress.setuId(uId);
+        List<UserAddress> userAddresses=this.addressService.selectAdByUid(userAddress);
+        return ReturnMessageUtil.sucess(userAddresses);
     }
 }
