@@ -89,7 +89,7 @@ public class AddressController {
      */
 
     @PostMapping("/DelAd/{uaId}")
-    public ReturnMessage<Object> EditAd(@PathVariable() Integer uaId){
+    public ReturnMessage<Object> DelAd(@PathVariable() Integer uaId){
 
         if (StringUtils.isEmpty(uaId)||uaId==0) {
             throw new SbException(400, "输入不合法");
@@ -106,11 +106,10 @@ public class AddressController {
         return ReturnMessageUtil.sucess(true);
     }
     /**
-     * 1.验证userAddress是否为空
-     * 2.查询用户是否存在
-     *3.判断收货人姓名，地址是否为空
-     * 4.更新
-     * 5.返回
+     * 验证uId是否为空
+     * 查询用户是否存在
+     * 获取数据
+     * 返回
      */
 
     @GetMapping("/SelADs/{uId}")
@@ -127,5 +126,22 @@ public class AddressController {
         userAddress.setuId(uId);
         List<UserAddress> userAddresses=this.addressService.selectAdByUid(userAddress);
         return ReturnMessageUtil.sucess(userAddresses);
+    }
+
+    /**
+     * 验证uId是否为空
+     * 查询用户是否存在
+     * 获取数据
+     * 返回
+     */
+
+    @GetMapping("/SelADByUaId/{uaId}")
+    public ReturnMessage<Object> SelADByUaId(@PathVariable() Integer uaId){
+
+        if (StringUtils.isEmpty(uaId)||uaId==0) {
+            throw new SbException(400, "输入不合法");
+        }
+        UserAddress userAddresse=this.addressService.selectUserByUaId(uaId);
+        return ReturnMessageUtil.sucess(userAddresse);
     }
 }
