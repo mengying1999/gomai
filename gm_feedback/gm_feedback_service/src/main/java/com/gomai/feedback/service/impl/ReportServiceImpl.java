@@ -17,7 +17,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public int ReportAdd(Report report) {
-        int flag=this.reportMapper.insert(report);
+        int flag=this.reportMapper.insertreport(report);
         return flag;
     }
 }

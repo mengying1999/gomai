@@ -48,6 +48,7 @@ public class ReportController {
         if (!StringUtils.isEmpty(reportMedias)) {
             for(int i=0;reportMedias.size()>i;i++){
                 reportMedias.get(i).setrId(report.getrId());
+                System.out.println(report.getrId());
             }
             int flag1 = rMediaService.RMediaAdd(reportMedias);
             if (flag1 == 0) {

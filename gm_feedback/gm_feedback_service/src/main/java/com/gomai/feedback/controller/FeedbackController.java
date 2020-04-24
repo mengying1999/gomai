@@ -50,6 +50,7 @@ public class FeedbackController {
         if (!StringUtils.isEmpty(feedbackMedias)) {
             for(int i=0;feedbackMedias.size()>i;i++){
                 feedbackMedias.get(i).setfId(feedback.getfId());
+                System.out.println("第"+i+"个媒体，id"+feedback.getfId());
             }
             int flag1 = fMediaService.FMediaAdd(feedbackMedias);
             if (flag1 == 0) {
