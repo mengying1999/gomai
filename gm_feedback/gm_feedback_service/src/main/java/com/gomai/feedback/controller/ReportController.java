@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/Feedback")
+@RequestMapping("/Report")
 public class ReportController {
     @Autowired
     private ReportService reportService;

@@ -3,6 +3,7 @@ package com.gomai.user.controller;
 import com.gomai.user.pojo.User;
 import com.gomai.user.service.UserService;
 import com.gomai.user.vo.RegisterParam;
+import com.gomai.user.vo.UserVo;
 import com.gomai.utils.CodecUtils;
 import com.gomai.utils.ReturnMessage;
 import com.gomai.utils.ReturnMessageUtil;
@@ -38,9 +39,10 @@ public class UserController {
      */
 
     @PostMapping("/Edit")
-    public ReturnMessage<Object> Edit(@RequestBody User user){
-
-        if (StringUtils.isEmpty(user)) {
+    public ReturnMessage<Object> Edit(@RequestBody UserVo userVo){
+        System.out.println(userVo);
+        User user=userVo.getUser();
+        if (StringUtils.isEmpty(user.getuPhone())||StringUtils.isEmpty(user.getuId())||StringUtils.isEmpty(userVo.getRepw())||StringUtils.isEmpty(userVo.getPw())) {
             throw new SbException(400, "输入不合法");
         }
         int uid=user.getuId();
@@ -48,9 +50,33 @@ public class UserController {
         if(StringUtils.isEmpty(user1)){
             throw new SbException(400, "不存在该用户");
         }
-        if(user.getuName().length()!=11){
-            throw new SbException(400, "非法电话号码");
+        if (!user.getuName().equals(user1.getuName())) {
+            if (!this.userService.checkData(user.getuName(), 1)) {
+                throw new SbException(100, "该用户名已注册！");
+            }
         }
+        if (!userVo.getRepw().equals(userVo.getPw())){
+            throw new SbException(100, "两次密码不一致！");
+        }
+        if (!user.getuPhone().equals(user1.getuPhone())) {
+            String cacheCode = this.redisTemplate.opsForValue().get(KEY_PREFIX + user.getuPhone());
+            if (StringUtils.isEmpty(userVo.getCode()) || StringUtils.isEmpty(cacheCode)){
+                throw new SbException(100, "验证码错误");
+            }
+            if (!userVo.getCode().equals(cacheCode)){
+                throw new SbException(100, "验证码错误");
+            }
+            if (!this.userService.checkData(user.getuPhone(), 2)) {
+                throw new SbException(100, "该手机号已注册！");
+            }
+        }
+        String expression = "((^((0\\d{2,3})-)(\\d{7,8})(-(\\d{3,}))?$)|(^((13[0-9])|(15[^4,\\D])|(18[0-9])|(14[5,7])|(17[0,1,3,5-8]))\\d{8}$))";
+        Pattern pattern = Pattern.compile(expression);
+        Matcher matcher = pattern.matcher(user.getuPhone());
+        if(!matcher.matches()){
+            throw new SbException(100, "手机号格式不正确！");
+        }
+        user.setuPassword(userVo.getPw());
         int flag=this.userService.updateuser(user);
         if(flag==0){
             throw new SbException(100, "更新失败");

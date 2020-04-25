@@ -39,6 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int updateuser(User user) {
+        user.setuPassword(CodecUtils.md5Hex(user.getuPassword(), slat));
         int flag=this.userMapper.updateByPrimaryKey(user);
         return flag;
     }
