@@ -254,7 +254,9 @@ public class OrderCommentController {
         if (StringUtils.isEmpty(order)) {
             throw new SbException(400, "不存在该用户");
         }
+        Date date=new Date();
 
+        orderComment.setOcTime(date);
         int flag=this.commentService.insertComment(orderComment);
         return ReturnMessageUtil.sucess(true);
     }

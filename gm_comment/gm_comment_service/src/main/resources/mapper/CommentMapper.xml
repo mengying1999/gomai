@@ -24,7 +24,7 @@
         <association property="goodsVo" column="g_id" select="com.gomai.order.mapper.OGoodsMapper.selectGoodsVoByGId"></association>
         <collection property="commentMedias" column="o_id" select="com.gomai.comment.mapper.CommentMidaMapper.selectOEM"></collection>
         <collection property="commentVos" column="o_id" select="com.gomai.comment.mapper.OrderCommentMapper.selectcommentvoByoId"></collection>
-    </resultMap>
+        </resultMap>
     <resultMap id="commentVo" type="com.gomai.comment.vo.CommentVo">
         <id property="ocId" column="oc_id"></id>
         <result property="oId" column="o_id"></result>

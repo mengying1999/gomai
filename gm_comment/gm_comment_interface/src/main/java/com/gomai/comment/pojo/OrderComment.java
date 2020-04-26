@@ -1,6 +1,7 @@
 package com.gomai.comment.pojo;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  *
@@ -19,14 +20,25 @@ public class OrderComment {
     private Integer uId;  //用户id
     @Column(name = "oc_content")
     private String ocContent; // 评论
+    @Column(name = "oc_time")
+    private Date ocTime; // 评论
 
     public OrderComment() {
     }
 
-    public OrderComment(Integer oId, Integer uId, String ocContent) {
+    public OrderComment(Integer oId, Integer uId, String ocContent, Date ocTime) {
         this.oId = oId;
         this.uId = uId;
         this.ocContent = ocContent;
+        this.ocTime = ocTime;
+    }
+
+    public Date getOcTime() {
+        return ocTime;
+    }
+
+    public void setOcTime(Date ocTime) {
+        this.ocTime = ocTime;
     }
 
     public Integer getOcId() {
@@ -67,6 +79,7 @@ public class OrderComment {
                 "ocId=" + ocId +
                 ", oId=" + oId +
                 ", uId=" + uId +
+                ", ocTime=" + ocTime +
                 ", ocContent='" + ocContent + '\'' +
                 '}';
     }
