@@ -19,17 +19,14 @@ public class OrderComment {
     private Integer uId;  //用户id
     @Column(name = "oc_content")
     private String ocContent; // 评论
-    @Column(name = "oc_time")
-    private String ocTime;
 
     public OrderComment() {
     }
 
-    public OrderComment(Integer oId, Integer uId, String ocContent, String ocTime) {
+    public OrderComment(Integer oId, Integer uId, String ocContent) {
         this.oId = oId;
         this.uId = uId;
         this.ocContent = ocContent;
-        this.ocTime = ocTime;
     }
 
     public Integer getOcId() {
@@ -64,14 +61,6 @@ public class OrderComment {
         this.ocContent = ocContent;
     }
 
-    public String getOcTime() {
-        return ocTime;
-    }
-
-    public void setOcTime(String ocTime) {
-        this.ocTime = ocTime;
-    }
-
     @Override
     public String toString() {
         return "OrderComment{" +
@@ -79,7 +68,6 @@ public class OrderComment {
                 ", oId=" + oId +
                 ", uId=" + uId +
                 ", ocContent='" + ocContent + '\'' +
-                ", ocTime='" + ocTime + '\'' +
                 '}';
     }
 }

@@ -6,7 +6,9 @@ import com.gomai.comment.mapper.OrderCommentMapper;
 import com.gomai.comment.pojo.OrderComment;
 import com.gomai.comment.pojo.OrderEvaluationMedia;
 import com.gomai.comment.service.OrderCommentService;
+import com.gomai.comment.vo.OComentVo;
 import com.gomai.comment.vo.OcorderVo;
+import com.gomai.comment.vo.OrderComentVo;
 import com.gomai.order.pojo.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,6 +45,33 @@ public class OrderCommentServiceImpl implements OrderCommentService {
     @Override
     public int insertocmedia(List<OrderEvaluationMedia> orderEvaluationMedias) {
         int flag=this.commentMidaMapper.insertList(orderEvaluationMedias);
+        return flag;
+    }
+
+    @Override
+    public List<OrderComment> selectByuId(OrderComment orderComment) {
+        List<OrderComment> orderComments=this.orderCommentMapper.select(orderComment);
+        return orderComments;
+    }
+
+    @Override
+    public OrderComentVo selectOrderComentVoByOId(Integer oId) {
+        return this.orderCommentMapper.selectOrderComentVoByOId(oId);
+    }
+
+    @Override
+    public List<OrderComentVo> selectOrderComentVosBySellUId(Integer uId, List<Integer> orStatus) {
+        return this.orderCommentMapper.selectOrderComentVosBySellUId(uId,orStatus);
+    }
+
+    @Override
+    public List<OrderComentVo> selectOrderComrntVosByUId(Integer uId, List<Integer> orStatus) {
+        return this.orderCommentMapper.selectOrderComrntVosByUId(uId, orStatus);
+    }
+
+    @Override
+    public int insertComment(OrderComment orderComment) {
+        int flag=this.orderCommentMapper.insert(orderComment);
         return flag;
     }
 }
