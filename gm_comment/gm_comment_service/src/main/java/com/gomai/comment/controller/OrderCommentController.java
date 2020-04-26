@@ -240,7 +240,7 @@ public class OrderCommentController {
         return ReturnMessageUtil.sucess(pageResult);
     }
     @PostMapping("/InsertComment")
-    public ReturnMessage<Object> InsertComment(OrderComment orderComment){
+    public ReturnMessage<Object> InsertComment(@RequestBody OrderComment orderComment){
         if (StringUtils.isEmpty(orderComment)||orderComment.getoId() ==0|| orderComment.getuId() == 0 || StringUtils.isEmpty(orderComment.getOcContent()) ) {
             throw new SbException(400, "输入不合法");
         }
