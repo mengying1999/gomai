@@ -35,7 +35,7 @@ public class AuthController {
         }
         String token = authService.login(uName,uPassword);
         if (StringUtils.isEmpty(token)) {
-            throw new SbException(100, "登录失败！");
+            throw new SbException(100, "用户名或密码错误！");
         }
         CookieUtils.setCookie(request,response,jwtProperties.getCookieName(),token,jwtProperties.getCookieMaxAge());
         return ReturnMessageUtil.sucess(true);
