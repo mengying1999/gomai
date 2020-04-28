@@ -195,14 +195,14 @@ public class UserController {
     }
 
     @GetMapping("/query")
-    public ResponseEntity<User> queryBy(@RequestParam("uName") String uName, @RequestParam("uPassword") String uPassword) {
+    public User queryBy(@RequestParam("uName") String uName, @RequestParam("uPassword") String uPassword) {
         System.out.println(uName);
         User user = userService.queryBy(uName,uPassword);
         System.out.println(user);
-        if (user == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(user);
+//        if (user == null) {
+//            return ResponseEntity.badRequest().build();
+//        }
+        return user;
     }
 
 }
