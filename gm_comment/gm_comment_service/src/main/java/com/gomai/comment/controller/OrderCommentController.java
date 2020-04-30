@@ -44,15 +44,15 @@ public class OrderCommentController {
     public ReturnMessage<Object> InsertOC(@RequestBody OComentVo oComentVo){
         Order order=oComentVo.getOrder();
         List<OrderEvaluationMedia> orderEvaluationMedias=oComentVo.getOrderEvaluationMedia();
-        if (StringUtils.isEmpty(order)) {
+        if (StringUtils.isEmpty(oComentVo)||order.getoId() ==0|| StringUtils.isEmpty(order.getoEvaluation()) ) {
             throw new SbException(400, "输入不合法");
-        }
-        if (StringUtils.isEmpty(order.getoEvaluation())){
-            throw new SbException(400, "评论内容不可为空");
         }
         Order order1=new Order();
         order1.setoId(order.getoId());
         Order o=this.oderService.selectByoId(order1);
+        if (StringUtils.isEmpty(o)) {
+            throw new SbException(400, "不存在该订单");
+        }
         System.out.println("我是oid"+order.getoEvaluation());
         o.setoEvaluation(order.getoEvaluation());
         if (o.getoStatus()!=4){//待评价
@@ -64,13 +64,14 @@ public class OrderCommentController {
             for(int i=0;orderEvaluationMedias.size()>i;i++){
                 orderEvaluationMedias.get(i).setoId(order.getoId());
             }
-            int flag = this.commentService.insertocmedia(orderEvaluationMedias);
-            if (flag == 0) {
-                throw new SbException(100, "添加评价媒体失败");
-            }
+
         }
         o.setoStatus(5);
         int flag=this.oderService.Updateoe(o);
+        int flag1 = this.commentService.insertocmedia(orderEvaluationMedias);
+        if (flag == 0) {
+            throw new SbException(100, "添加评价媒体失败");
+        }
         return ReturnMessageUtil.sucess(true);
     }
 //    /**
