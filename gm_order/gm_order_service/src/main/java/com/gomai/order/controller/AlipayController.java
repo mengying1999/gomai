@@ -73,7 +73,7 @@ public class AlipayController {
         if (flag == 0) {
             throw new SbException(100, "状态更改失败！");
         }
-        DshOrder dshOrder = new DshOrder("" + order.getoId(), 60 * 60 * 1000, 2);
+        DshOrder dshOrder = new DshOrder("" + order.getoId(), 7 * 24 * 60 * 60 * 1000, 2);
         delayService.add(dshOrder);
         ModelAndView modelAndView = new ModelAndView("redirect:http://www.gomai.com/buyOrder");
         return modelAndView;

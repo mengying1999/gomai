@@ -158,7 +158,7 @@ public class OrderController {
         if (order.getoId() == 0){
             throw new SbException(100, "添加失败!");
         }
-        DshOrder dshOrder = new DshOrder(""+order.getoId(),60 * 60 * 1000,1);
+        DshOrder dshOrder = new DshOrder(""+order.getoId(),30 * 60 * 1000,1);
         delayService.add(dshOrder);
         return ReturnMessageUtil.sucess(order);
     }
@@ -356,7 +356,7 @@ public class OrderController {
         if (flag == 0){
             throw new SbException(100, "更新失败!");
         }
-        DshOrder dshOrder = new DshOrder(""+order.getoId(),60 * 60 * 1000,3);
+        DshOrder dshOrder = new DshOrder(""+order.getoId(),15 * 24 * 60 * 60 * 1000,3);
         delayService.add(dshOrder);
         ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",true);
         System.out.println(message);
@@ -406,7 +406,7 @@ public class OrderController {
             throw new SbException(100, "更新错误!");
         }
         //创建定时器（即15天未评价则将订单改为已评价，评价为默认评价）
-        DshOrder dshOrder = new DshOrder(""+order.getoId(),60 * 60 * 1000,4);
+        DshOrder dshOrder = new DshOrder(""+order.getoId(),15 * 24 * 60 * 60 * 1000,4);
         delayService.add(dshOrder);
         ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",true);
         System.out.println(message);
@@ -575,7 +575,7 @@ public class OrderController {
         if (StringUtils.isEmpty(order.getuId()) || order.getuId() == 0 || StringUtils.isEmpty(order.getoId()) || order.getoId() == 0 || StringUtils.isEmpty(order.getoStatus()) || order.getoStatus() == 0) {
             throw new SbException(100, "参数错误!");
         }
-        if (order.getoStatus() != 4 && order.getoStatus() != 6&& order.getoStatus() != 5) {
+        if (order.getoStatus() != 4 && order.getoStatus() != 6&& order.getoStatus() != 5&& order.getoStatus() != 9) {
             throw new SbException(100, "不能删除!");
         }
         List<Order> orders = orderService.queryOrderByOrder(order);
@@ -609,7 +609,7 @@ public class OrderController {
         if (StringUtils.isEmpty(uId) || uId == 0 || StringUtils.isEmpty(oId) || oId == 0 || StringUtils.isEmpty(oStatus) || oStatus == 0) {
             throw new SbException(100, "参数错误!");
         }
-        if (oStatus != 4 && oStatus != 6 && oStatus != 5) { //待评价订单
+        if (oStatus != 4 && oStatus != 6 && oStatus != 5 && oStatus != 9) { //待评价订单
             throw new SbException(100, "不能删除!");
         }
         List<Order> orders = orderService.queryOrderBySaleUId(uId, oId, oStatus);
@@ -752,9 +752,6 @@ public class OrderController {
         if (StringUtils.isEmpty(askReturnParams.getOrderReturn().getOrReason()) || StringUtils.isEmpty(askReturnParams.getOrderReturn().getOrReceived())){
             throw new SbException(100, "输入不合法");
         }
-        if (CollectionUtils.isEmpty(askReturnParams.getOrderReturnMedias())){
-            throw new SbException(100, "输入不合法");
-        }
         if (askReturnParams.getoStatus() != 3  && askReturnParams.getoStatus() != 4 ){
             throw new SbException(100, "不能退货退款！");
         }
@@ -773,12 +770,14 @@ public class OrderController {
         if (flag == 0){
             throw new SbException(100, "申请失败！");
         }
-        for (OrderReturnMedia orderReturnMedia :askReturnParams.getOrderReturnMedias()) {
-            orderReturnMedia.setOrId(askReturnParams.getOrderReturn().getOrId());
-        }
-        flag = orderReturnMediaService.insertOrderReturnMedias(askReturnParams.getOrderReturnMedias());
-        if (flag == 0){
-            throw new SbException(100, "申请失败！");
+        if (!CollectionUtils.isEmpty(askReturnParams.getOrderReturnMedias())){
+            for (OrderReturnMedia orderReturnMedia :askReturnParams.getOrderReturnMedias()) {
+                orderReturnMedia.setOrId(askReturnParams.getOrderReturn().getOrId());
+            }
+            flag = orderReturnMediaService.insertOrderReturnMedias(askReturnParams.getOrderReturnMedias());
+            if (flag == 0){
+                throw new SbException(100, "申请失败！");
+            }
         }
         if (askReturnParams.getoStatus() == 3){
             orders.get(0).setoStatus(7);//如果是待收货申请退货退款就将订单状态改为7
@@ -788,9 +787,8 @@ public class OrderController {
         }
         flag = orderService.updateOrder(orders.get(0));
         //定时器，多久之内没有处理就自动同意
-        DshOrder dshOrder = new DshOrder(""+askReturnParams.getOrderReturn().getOrId(),60 * 60 * 1000,5);
+        DshOrder dshOrder = new DshOrder(""+askReturnParams.getOrderReturn().getOrId(),7 * 24 * 60 * 60 * 1000,5);
         delayService.add(dshOrder);
-
         if (flag == 0){
             throw new SbException(100, "申请失败！");
         }
@@ -884,7 +882,7 @@ public class OrderController {
             throw new SbException(100, "拒绝失败");
         }
         //创建定时器
-        DshOrder dshOrder = new DshOrder(""+orId,60 * 60 * 1000,6);
+        DshOrder dshOrder = new DshOrder(""+orId,7 * 24 * 60 * 60 * 1000,6);
         delayService.add(dshOrder);
         ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",true);
         System.out.println(message);

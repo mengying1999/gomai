@@ -58,6 +58,12 @@ gomai:
     allowPaths:
     - /api/auth
     - 10010
-    - /user
-    - /comment
-    - /feedback
+    - /user/check
+    - /user/register
+    - /user/selectByuid
+    - /user/code
+    - /user/query
+    - /goods/goods/findRecommendGoods
+    - /goods/goods/findGoodsDetail
+    - /goods/goods/findGoodsByType
+    - /goods/goods/findGoodsByDetail
