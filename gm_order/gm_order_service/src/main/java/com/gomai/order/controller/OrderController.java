@@ -561,7 +561,7 @@ public class OrderController {
     /**
      *删除订单(买家)
      * 1. 判断oId,uId,oStatus,是否合法
-     * 2. 判断oStatus是否为4即待评价订单
+     * 2. 判断oStatus是否为4即待评价订单5和9即交易成功，6即取消订单
      * 3. 根据三个条件查询订单是否存在，根据买家id
      * @return
      */

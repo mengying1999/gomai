@@ -37,8 +37,8 @@ public class OGoodsController {
      * 4.根据gId查询是否该商品已经下架，提醒该商品已经下架
      * @return
      */
-    @GetMapping("/verifyGoodsByGId/{gId}")
-    public ReturnMessage<Object> verifyGoodsByGId(@PathVariable("gId") Integer gId){
+    @GetMapping("/verifyGoodsByGId/{gId}/{uId}")
+    public ReturnMessage<Object> verifyGoodsByGId(@PathVariable("gId") Integer gId,@PathVariable("uId") Integer uId){
 //        1.判断gId是否合法
         if(gId == null || gId <0){
             throw new SbException(400, "不合法字符");
@@ -47,6 +47,9 @@ public class OGoodsController {
         GoodsVo goodsVo = this.oGoodsService.queryGoodsVoByGId(gId);
         if (StringUtils.isEmpty(goodsVo)) {
             throw new SbException(100, "该商品不存在!");
+        }
+        if(goodsVo.getUser().getuId().equals(uId)){
+            throw new SbException(100, "不能购买自己发布的商品!");
         }
 //        3.根据gId查询是否存在该订单且订单信息为待付款，符合不走4，提醒用户该商品已经被拍下还未付款，您还有机会，不符合走4
         List<Order> orders = this.orderService.queryPayOrderByGId(gId);

@@ -97,12 +97,12 @@
 
     <select id="searchOrderVoByUId" resultMap="com.gomai.order.mapper.OrderMapper.orderVo">
     <bind name="name" value="'%' + gName +'%'" />
-    select order_form.* from order_form, goods where goods.g_id = order_form.g_id and order_form.u_id = #{uId} and goods.g_name like #{name}
+    select order_form.* from order_form, goods where o_sell_delete = 0 and goods.g_id = order_form.g_id and order_form.u_id = #{uId} and goods.g_name like #{name}
     order by o_create_time desc
 </select>
     <select id="searchOrderVoBySaleUId" resultMap="com.gomai.order.mapper.OrderMapper.orderVo">
         <bind name="name" value="'%' + gName +'%'" />
-        select order_form.* from order_form, goods where goods.g_id = order_form.g_id and goods.u_id = #{uId} and goods.g_name like #{name}
+        select order_form.* from order_form, goods where o_buy_delete = 0 and goods.g_id = order_form.g_id and goods.u_id = #{uId} and goods.g_name like #{name}
         order by o_create_time desc
     </select>
 </mapper>
