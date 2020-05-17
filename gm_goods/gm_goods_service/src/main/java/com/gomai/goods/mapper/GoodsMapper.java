@@ -17,13 +17,13 @@ public interface GoodsMapper extends Mapper<Goods>{
 
 //    @Insert("insert into goods(g_id,u_id,ca2_id,g_name,g_detail,g_price,g_status,g_create_time) values(null,#uId,#ca2Id,#gName,#gDetail,#gPrice,#gStatus,#gCreateTime)")
 //       boolean insertGoods(Goods goods);
-@Select("select g_id,g_name,g_price from goods where g_create_time>='2020-04-14 00:00:00' and g_create_time<'2020-04-14 23:59:59'")
+@Select("select g_id,g_name,g_price from goods where g_create_time>='2020-05-17 00:00:00' and g_create_time<'2020-05-17 23:59:59' and g_status=0 order by g_create_time asc limit 8")
 @Results(id = "findRecommendGoods",value = {@Result(id = true,column = "g_id",property = "gId"),
         @Result(column = "g_name",property = "gName"),
         @Result(column = "g_price",property = "gPrice"),
         @Result(column = "g_id",property = "goodsMedias",many = @Many(select = "com.gomai.goods.mapper.GoodsMapper.findRecommendGoodsMedia"))
 })
-  List<RecommendGoods> findRecommendGoods();//查询级联类别
+  List<RecommendGoods> findRecommendGoods();//查询推荐商品
 
     @Select("select gm_id,g_id,gm_url,gm_type  from goods_media where g_id=#{g_id}&&gm_type=0 LIMIT 1")
     @Results(id = "findRecommendGoodsMedia",value = {@Result(id = true,column = "gm_id",property = "gmId"),
@@ -61,7 +61,7 @@ public interface GoodsMapper extends Mapper<Goods>{
     })
     GoodsVo findGoodsDetail(Integer g_id);//根据id查询商品详情
 
-  @Select({"<script>", "select g_id,g_name,g_price from goods where ca2_id in ","<foreach collection='categoryTwoList' item='ca2_id' open='(' separator=',' close=')'>#{ca2_id}</foreach>","</script>"})
+  @Select({"<script>", "select g_id,g_name,g_price from goods where g_status=0 and ca2_id in ","<foreach collection='categoryTwoList' item='ca2_id' open='(' separator=',' close=')'>#{ca2_id}</foreach>","</script>"})
 //  @Select({"<script>", "select * from integral_exchange where u_id=#{uid} and ie_type in ","<foreach collection='types' item='type' open='(' separator=',' close=')'>#{type}</foreach>","</script>"})
   @Results(id = "findGoodsByType",value = {@Result(id = true,column = "g_id",property = "gId"),
           @Result(column = "g_name",property = "gName"),
@@ -71,7 +71,7 @@ public interface GoodsMapper extends Mapper<Goods>{
 
     List<RecommendGoods> findGoodsByType(@Param("categoryTwoList") List<Integer> categoryTwoList);
 
-  @Select( "select g_id,g_name,g_price from goods where g_detail like CONCAT('%',#{g_detail},'%')")
+  @Select( "select g_id,g_name,g_price from goods where g_status=0 and g_detail like CONCAT('%',#{g_detail},'%')")
   @Results(id = "findGoodsByDetail",value = {@Result(id = true,column = "g_id",property = "gId"),
           @Result(column = "g_name",property = "gName"),
           @Result(column = "g_price",property = "gPrice"),
