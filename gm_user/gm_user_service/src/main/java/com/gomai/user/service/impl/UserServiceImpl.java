@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     static final String KEY_PREFIX = "user:code:phone:";
-
+    @Override
     public User selectUserByUid(Integer uId) {
         User user=this.userMapper.selectByPrimaryKey(uId);
         return user;
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
+    @Override
     public String sendVerifyCode(String phone) {
         // 生成验证码
         String code = NumberUtils.generateCode(6);
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
         return code;
     }
 
-
+    @Override
     public Boolean register(User user, String code) {
         // 校验短信验证码
         String cacheCode = this.redisTemplate.opsForValue().get(KEY_PREFIX + user.getuPhone());
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
         }
         return b;
     }
-
+    @Override
     public Boolean checkData(String data, Integer type) {
         User record = new User();
         switch (type) {
@@ -106,7 +106,8 @@ public class UserServiceImpl implements UserService {
             default:
                 return null;
         }
-        return this.userMapper.selectCount(record) == 0;
+        System.out.println(record);
+        return this.userMapper.select(record) == null;
     }
 
 
