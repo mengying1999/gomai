@@ -95,19 +95,21 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public Boolean checkData(String data, Integer type) {
-        User record = new User();
+        Example example = new Example(User.class);
+        Example.Criteria criteria = example.createCriteria();
         switch (type) {
             case 1:
-                record.setuName(data);
+                criteria.andEqualTo("uName", data);
                 break;
             case 2:
-                record.setuPhone(data);
+                criteria.andEqualTo("uPhone", data);
                 break;
             default:
                 return null;
         }
-        System.out.println(record);
-        return this.userMapper.select(record) == null;
+        User user = userMapper.selectOneByExample(example);
+//        System.out.println(record);
+        return StringUtils.isEmpty(user);
     }
 
 
