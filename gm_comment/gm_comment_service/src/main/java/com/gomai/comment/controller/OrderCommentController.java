@@ -60,15 +60,17 @@ public class OrderCommentController {
         }
 
         System.out.println("我是oid"+order.getoId());
+        Date date=new Date();
+        o.setoEvaluationTime(date);
+        o.setoStatus(5);
+        int flag=this.oderService.Updateoe(o);
         if(!StringUtils.isEmpty(orderEvaluationMedias)) {
             for(int i=0;orderEvaluationMedias.size()>i;i++){
                 orderEvaluationMedias.get(i).setoId(order.getoId());
             }
-
+            int flag1 = this.commentService.insertocmedia(orderEvaluationMedias);
         }
-        o.setoStatus(5);
-        int flag=this.oderService.Updateoe(o);
-        int flag1 = this.commentService.insertocmedia(orderEvaluationMedias);
+
         if (flag == 0) {
             throw new SbException(100, "添加评价媒体失败");
         }
