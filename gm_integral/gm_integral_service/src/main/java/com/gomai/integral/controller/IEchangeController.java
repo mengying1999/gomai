@@ -122,9 +122,9 @@ public class IEchangeController {
      * @param igId  积分商品id
      * @return
      */
-    @PostMapping("/insertIE/{uId}/{igId}")
-    public ReturnMessage<Object> insertIE(@PathVariable("uId") Integer uId ,@PathVariable("igId") Integer igId) {
-        if((StringUtils.isEmpty(uId)||uId<0)||(StringUtils.isEmpty(igId)||igId<0)){
+    @PostMapping("/insertIE/{uId}/{igId}/{num}")
+    public ReturnMessage<Object> insertIE(@PathVariable("uId") Integer uId ,@PathVariable("igId") Integer igId,@PathVariable("num") Integer num) {
+        if((StringUtils.isEmpty(uId)||uId<0)||(StringUtils.isEmpty(igId)||igId<0)||num<0){
             System.out.println(uId+""+igId);
             throw  new  SbException(100,"非法字符");
         }
@@ -138,7 +138,7 @@ public class IEchangeController {
         if(flag==0){
             throw  new SbException(400,"删除失败");
         }
-        int uTotalIntegral=user.getuTotalIntegral()-integralGoods.getIgIntegral();
+        int uTotalIntegral=user.getuTotalIntegral()-(num*integralGoods.getIgIntegral());
         if(uTotalIntegral<0){
             uTotalIntegral=user.getuTotalIntegral();
             throw  new SbException(400,"积分不足");
