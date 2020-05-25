@@ -16,4 +16,6 @@ public interface IGoodsService {
     public List<IntegralGoods> SelectByigName(String igName);
 
     public List<IntegralGoods> SelectNew();
+
+    int updateByigStore(IntegralGoods integralGoods);
 }

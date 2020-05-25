@@ -43,4 +43,10 @@ public class IGoodsServiceImpl implements IGoodsService {
         List<IntegralGoods> integralGoods=this.iGoodsMapper.selectNew();
         return integralGoods;
     }
+
+    @Override
+    public int updateByigStore(IntegralGoods integralGoods) {
+        int flag=this.iGoodsMapper.updateByPrimaryKey(integralGoods);
+        return flag;
+    }
 }

@@ -130,21 +130,32 @@ public class IEchangeController {
         }
         User user=this.iEUserService.selectUserByUid(uId);
         IntegralGoods integralGoods=this.iGoodsService.SelectByigId(igId);
-        if (StringUtils.isEmpty(user)||StringUtils.isEmpty(integralGoods)){
-            throw  new SbException(400,"非法积分商品或用户");
+        if (StringUtils.isEmpty(user)||StringUtils.isEmpty(integralGoods)) {
+            throw new SbException(400, "非法积分商品或用户");
         }
 
         int flag=this.iExchangeService.insertIE(uId,igId);
         if(flag==0){
             throw  new SbException(400,"删除失败");
         }
+        int igStore;
+        igStore=integralGoods.getIgStore()-num;
+        if(igStore<0){
+            igStore=integralGoods.getIgStore();
+            throw  new SbException(400,"库存不足");
+        }
         int uTotalIntegral=user.getuTotalIntegral()-(num*integralGoods.getIgIntegral());
         if(uTotalIntegral<0){
             uTotalIntegral=user.getuTotalIntegral();
             throw  new SbException(400,"积分不足");
         }
+        integralGoods.setIgStore(igStore);
         user.setuTotalIntegral(uTotalIntegral);
         int flag1=this.iEUserService.updateByuTotalIntegral(user);
+        int flag2=this.iGoodsService.updateByigStore(integralGoods);
+        if(flag1==0||flag2==0){
+            throw  new SbException(400,"购买失败,请稍后重试");
+        }
         return ReturnMessageUtil.sucess(true);
     }
     /**
