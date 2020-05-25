@@ -138,6 +138,9 @@ public class IEchangeController {
         if(flag==0){
             throw  new SbException(400,"删除失败");
         }
+        if(integralGoods.getIgStore()==0){
+            throw new SbException(400, "该商品库存不足，正在催商家加货！");
+        }
         int igStore;
         igStore=integralGoods.getIgStore()-num;
         if(igStore<0){
