@@ -139,6 +139,8 @@ public class UserController {
         if (!matcher.matches()){
             throw new SbException(100, "手机号格式不正确！");
         }
+        System.out.println(registerParam.getuName());
+        System.out.println(this.userService.checkData(registerParam.getuName(), 1));
         if (!this.userService.checkData(registerParam.getuName(), 1)){
             throw new SbException(100, "该用户已注册！");
         }
