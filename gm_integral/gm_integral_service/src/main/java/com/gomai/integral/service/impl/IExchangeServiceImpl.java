@@ -46,13 +46,13 @@ public class IExchangeServiceImpl implements IExchangeService {
     }
 
     @Override
-    public int insertIE(Integer uId, Integer igId) {
+    public int insertIE(Integer uId, Integer igId,Integer num) {
         IntegralGoods integralGoods=this.iGoodsService.SelectByigId(igId);
         Date date=new Date();
         IntegralExchange integralExchange=new IntegralExchange();
         integralExchange.setIgId(igId);
         integralExchange.setuId(uId);
-        integralExchange.setIeChangeIntegral(integralGoods.getIgIntegral());
+        integralExchange.setIeChangeIntegral(integralGoods.getIgIntegral()*num);
         integralExchange.setIeType(1);
         integralExchange.setIeCreateTime(date);
         System.out.println(integralExchange);

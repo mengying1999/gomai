@@ -149,7 +149,7 @@ public class IEchangeController {
         }
         integralGoods.setIgStore(igStore);
         user.setuTotalIntegral(uTotalIntegral);
-        int flag=this.iExchangeService.insertIE(uId,igId);
+        int flag=this.iExchangeService.insertIE(uId,igId,num);
         int flag1=this.iEUserService.updateByuTotalIntegral(user);
         int flag2=this.iGoodsService.updateByigStore(integralGoods);
         if(flag==0||flag1==0||flag2==0){

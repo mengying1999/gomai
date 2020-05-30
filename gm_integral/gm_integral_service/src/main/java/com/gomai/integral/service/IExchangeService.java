@@ -19,7 +19,7 @@ public interface IExchangeService {
 
     public IntegralExchange selectByieId(Integer ieId);
 
-    public int insertIE(Integer uId, Integer igId);
+    public int insertIE(Integer uId, Integer igId,Integer num);
 
     public int deleteByuId(Integer uId);
 }

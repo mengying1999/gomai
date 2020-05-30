@@ -10,6 +10,6 @@ import java.util.List;
 
 
 public interface IGoodsMapper extends Mapper<IntegralGoods> {
-    @Select("SELECT   a.* FROM  integral_goods AS a WHERE(SELECT  COUNT(*)   FROM    integral_goods AS b  WHERE    b.ig_type = a.ig_type AND a.`ig_id`>=b.ig_id  ) <= 3 ORDER BY a.ig_type DESC, a.`ig_id` DESC")
+    @Select("select a.* from integral_goods a where ig_id in (select b.ig_id from integral_goods b where b.ig_type = a.ig_type ORDER BY ig_id LIMIT 0,3) order by a.ig_type")
     public List<IntegralGoods> selectNew();
 }
