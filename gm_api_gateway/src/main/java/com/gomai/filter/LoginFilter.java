@@ -27,8 +27,6 @@ public class LoginFilter extends ZuulFilter {
     private JwtProperties jwtProperties;
     @Autowired
     private FilterProperties filterProperties;
-
-
     /**
     pre：请求在被路由之前执行
     routing：在路由请求时调用
@@ -66,7 +64,6 @@ public class LoginFilter extends ZuulFilter {
         //返回true表示要执行此过虑器
         return true;
     }
-
     //过虑器的内容
     @Override
     public Object run() throws ZuulException {
@@ -83,7 +80,6 @@ public class LoginFilter extends ZuulFilter {
 
             return ReturnMessageUtil.error(101,"登录过期");
         }
-
         try {
             JwtUtils.getInfoFromToken(token,jwtProperties.getPublicKey());
         } catch (Exception e) {

@@ -118,6 +118,16 @@ public class UserController {
     }
 
     //用户注册：参数：uName，uPassword，confirmUPassword，u_phone，code
+
+    /**
+     * 用户注册：
+     *      1.验证参数是否合法、
+     *      2.判断参数是否符合注册条件
+     *      3.用户注册
+     *      4.返回
+     * @param registerParam
+     * @return
+     */
     @Transactional
     @PostMapping("register")
     public ReturnMessage<Object> register(@RequestBody RegisterParam registerParam) {

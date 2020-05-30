@@ -26,6 +26,10 @@ public class AuthController {
     /**
      * 登录：
      *      用账户登录
+     *      验证参数
+     *      判断用户名密码是否正确
+     *      设置cookie
+     *      返回
      */
     @PostMapping("/login/{uName}/{uPassword}")
     public ReturnMessage<Object> login(@PathVariable("uName")String uName, @PathVariable("uPassword")String uPassword,

@@ -17,7 +17,7 @@ public interface GoodsMapper extends Mapper<Goods>{
 
 //    @Insert("insert into goods(g_id,u_id,ca2_id,g_name,g_detail,g_price,g_status,g_create_time) values(null,#uId,#ca2Id,#gName,#gDetail,#gPrice,#gStatus,#gCreateTime)")
 //       boolean insertGoods(Goods goods);
-@Select("select g_id,g_name,g_price from goods where g_create_time>='2020-05-17 00:00:00' and g_create_time<'2020-05-17 23:59:59' and g_status=0 order by g_create_time asc limit 8")
+@Select("select g_id,g_name,g_price from goods where g_create_time>='2020-05-20 00:00:00' and g_create_time<'2020-05-20 23:59:59' and g_status=0 order by g_create_time asc limit 8")
 @Results(id = "findRecommendGoods",value = {@Result(id = true,column = "g_id",property = "gId"),
         @Result(column = "g_name",property = "gName"),
         @Result(column = "g_price",property = "gPrice"),

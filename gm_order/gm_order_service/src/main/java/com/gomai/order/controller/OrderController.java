@@ -66,6 +66,7 @@ public class OrderController {
     @Autowired
     private OExchangeService oExchangeService;
 
+    //----------------------------------------------------------枝功能开始------------------------------------------------------------------------
     /**
      *生成订单
      * 1. 判断order是否为空
@@ -100,7 +101,7 @@ public class OrderController {
             throw new SbException(100, "该商品不存在!");
         }
 //      4. 判断商品的uId与买家uId是否相同
-        if(goods.getuId() == order.getuId()){
+        if(goods.getuId().equals(order.getuId())){
             throw new SbException(100, "不能购买自己发布的商品!");
         }
 //      5. 根据gId查询是否存在订单且订单信息为待付款，提醒用户该商品已经被拍下还未付款，您还有机会
@@ -119,7 +120,7 @@ public class OrderController {
             throw new SbException(100, "地址信息错误!");
         }
 //     8. 判断地址的uId与买家的uId是否相同
-        if(userAddress.getuId() != order.getuId()) {
+        if(!userAddress.getuId().equals(order.getuId()) ) {
             throw new SbException(100, "地址信息错误!");
         }
 //     9. 根据uId查询用户信息，判断是否为null
@@ -165,6 +166,8 @@ public class OrderController {
 
     /**
      *跳转去支付
+     * 设置阿里支付的参数
+     * 返回阿里页面
      * @param oId
      * @return
      * @throws Exception
@@ -207,112 +210,6 @@ public class OrderController {
         System.out.println(message);
         return message;
     }
-
-
-
-    /**
-     * 查询已经购买的商品的订单
-     * @param uId   买家Id
-     * @param type  状态
-     * @param size  每页个数
-     * @param currentPage 页码
-     * @return
-     * @throws Exception
-     */
-    @GetMapping(value = "/getOrder/{uId}/{type}/{size}/{currentPage}")
-    @ResponseBody
-    public ReturnMessage<Object> getOrder(@PathVariable("uId")Integer uId,@PathVariable("type")Integer type,@PathVariable("size")Integer size,@PathVariable("currentPage")Integer currentPage) throws Exception {
-        if (uId == 0 || size == 0 || currentPage == 0 ){
-            throw new SbException(100, "参数错误!");
-        }
-        Order order = new Order();
-        order.setoStatus(type);
-        order.setoBuyDelete(1);
-        order.setuId(uId);
-        System.out.println(order);
-        PageUtils pageUtils = new PageUtils();
-        QueryParams<Order> queryParams = new QueryParams<Order>();
-        queryParams.setData(order);
-        queryParams.setPage(currentPage);
-        queryParams.setRows(size);
-        pageUtils.startPage(queryParams);
-        List<OrderVo> orderVos = orderService.queryOrderVoByOthers( queryParams.getData());
-        PageResult pageResult = pageUtils.getDataTable(orderVos);
-        ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",pageResult);
-        System.out.println(message);
-        return message;
-    }
-
-    /**
-     * 查询已经卖出商品的订单
-     * @param uId  卖家id
-     * @param type  状态
-     * @param size  每页个数
-     * @param currentPage 页码
-     * @return
-     * @throws Exception
-     */
-    @GetMapping(value = "/getSaleOrder/{uId}/{type}/{size}/{currentPage}")
-    @ResponseBody
-    public ReturnMessage<Object> getSaleOrder(@PathVariable("uId")Integer uId,@PathVariable("type")Integer type,@PathVariable("size")Integer size,@PathVariable("currentPage")Integer currentPage) throws Exception {
-        if (uId == 0 || size == 0 || currentPage == 0 ){
-            throw new SbException(100, "参数错误!");
-        }
-        User user = new User();
-        user.setuId(uId);
-        GoodsVo goodsVo = new GoodsVo();
-        goodsVo.setUser(user);
-        OrderVo orderVo = new OrderVo();
-        orderVo.setoStatus(type);
-        orderVo.setGoodsVo(goodsVo);
-        orderVo.setoSellDelete(1);
-        PageUtils pageUtils = new PageUtils();
-        System.out.println(orderVo);
-        QueryParams<OrderVo> queryParams = new QueryParams<OrderVo>();
-        queryParams.setData(orderVo);
-        queryParams.setPage(currentPage);
-        queryParams.setRows(size);
-        pageUtils.startPage(queryParams);
-        List<OrderVo> orderVos = orderService.queryOrderVoBySaleUId( queryParams.getData());
-        PageResult pageResult = pageUtils.getDataTable(orderVos);
-        ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",pageResult);
-        System.out.println(message);
-        return message;
-    }
-
-    /**
-     * 模糊查询传入参数uId,gName,size,currentPage,isBuy返回结果：List<OrderVo>
-     *     1.验证参数
-     *     2.根据uId查询是否存在该用户
-     *     3.查询
-     *     4.返回
-     */
-    @GetMapping(value = "/searchOrder/{uId}/{gName}/{size}/{currentPage}/{isBuy}")
-    @ResponseBody
-    public ReturnMessage<Object> searchOrder(@PathVariable("uId")Integer uId,@PathVariable("gName")String gName,@PathVariable("size")Integer size,@PathVariable("currentPage")Integer currentPage,@PathVariable("isBuy") Boolean isBuy) throws Exception{
-        if (uId < 0 || size < 0 || currentPage < 0 ){
-            throw new SbException(100, "参数错误!");
-        }
-        User user = oUserService.queryUserByUId(uId);
-        if (StringUtils.isEmpty(user)){
-            throw new SbException(100, "不存在该用户!");
-        }
-        List<OrderVo> orderVos = new ArrayList<OrderVo>();
-        PageHelper.startPage(currentPage, size);
-        if(isBuy){//买家
-            orderVos  = orderService.searchOrderVoByUId(uId,gName);
-        }else {//卖家
-            orderVos  = orderService.searchOrderVoBySaleUId(uId,gName);
-        }
-        PageResult pageResult = new PageResult();
-        pageResult.setRows(orderVos);
-        pageResult.setTotal(new PageInfo(orderVos).getTotal());
-        ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",pageResult);
-        System.out.println(message);
-        return message;
-    }
-
-
 
     /**
      * 发货请求
@@ -728,6 +625,8 @@ public class OrderController {
     }
 
 
+    //----------------------------------------------------------凡功能开始------------------------------------------------------------------------
+
     /**
      * 申请退货退款功能
      * 1. 验证传来的参数 u_id、o_id、oStatus、or_reason、or_received和媒体类参数
@@ -814,8 +713,6 @@ public class OrderController {
         List<OrderReturnVo> orderReturnVos =  orderReturnService.queryOrderReturnVoByOthers(oId,orStatus);
         return ReturnMessageUtil.sucess(orderReturnVos.get(0));
     }
-
-
 
     /**
      * 同意退货退款请求
@@ -968,6 +865,9 @@ public class OrderController {
         }
     }
 
+
+
+    //----------------------------------------------------------萱功能开始------------------------------------------------------------------------
     /**
      * 根据oId查询订单详情
      */
@@ -990,4 +890,107 @@ public class OrderController {
         System.out.println(message);
         return message;
     }
+
+    /**
+     * 查询已经购买的商品的订单
+     * @param uId   买家Id
+     * @param type  状态
+     * @param size  每页个数
+     * @param currentPage 页码
+     * @return
+     * @throws Exception
+     */
+    @GetMapping(value = "/getOrder/{uId}/{type}/{size}/{currentPage}")
+    @ResponseBody
+    public ReturnMessage<Object> getOrder(@PathVariable("uId")Integer uId,@PathVariable("type")Integer type,@PathVariable("size")Integer size,@PathVariable("currentPage")Integer currentPage) throws Exception {
+        if (uId == 0 || size == 0 || currentPage == 0 ){
+            throw new SbException(100, "参数错误!");
+        }
+        Order order = new Order();
+        order.setoStatus(type);
+        order.setoBuyDelete(1);
+        order.setuId(uId);
+        System.out.println(order);
+        PageUtils pageUtils = new PageUtils();
+        QueryParams<Order> queryParams = new QueryParams<Order>();
+        queryParams.setData(order);
+        queryParams.setPage(currentPage);
+        queryParams.setRows(size);
+        pageUtils.startPage(queryParams);
+        List<OrderVo> orderVos = orderService.queryOrderVoByOthers( queryParams.getData());
+        PageResult pageResult = pageUtils.getDataTable(orderVos);
+        ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",pageResult);
+        System.out.println(message);
+        return message;
+    }
+
+    /**
+     * 查询已经卖出商品的订单
+     * @param uId  卖家id
+     * @param type  状态
+     * @param size  每页个数
+     * @param currentPage 页码
+     * @return
+     * @throws Exception
+     */
+    @GetMapping(value = "/getSaleOrder/{uId}/{type}/{size}/{currentPage}")
+    @ResponseBody
+    public ReturnMessage<Object> getSaleOrder(@PathVariable("uId")Integer uId,@PathVariable("type")Integer type,@PathVariable("size")Integer size,@PathVariable("currentPage")Integer currentPage) throws Exception {
+        if (uId == 0 || size == 0 || currentPage == 0 ){
+            throw new SbException(100, "参数错误!");
+        }
+        User user = new User();
+        user.setuId(uId);
+        GoodsVo goodsVo = new GoodsVo();
+        goodsVo.setUser(user);
+        OrderVo orderVo = new OrderVo();
+        orderVo.setoStatus(type);
+        orderVo.setGoodsVo(goodsVo);
+        orderVo.setoSellDelete(1);
+        PageUtils pageUtils = new PageUtils();
+        System.out.println(orderVo);
+        QueryParams<OrderVo> queryParams = new QueryParams<OrderVo>();
+        queryParams.setData(orderVo);
+        queryParams.setPage(currentPage);
+        queryParams.setRows(size);
+        pageUtils.startPage(queryParams);
+        List<OrderVo> orderVos = orderService.queryOrderVoBySaleUId( queryParams.getData());
+        PageResult pageResult = pageUtils.getDataTable(orderVos);
+        ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",pageResult);
+        System.out.println(message);
+        return message;
+    }
+
+    /**
+     * 模糊查询传入参数uId,gName,size,currentPage,isBuy返回结果：List<OrderVo>
+     *     1.验证参数
+     *     2.根据uId查询是否存在该用户
+     *     3.查询
+     *     4.返回
+     */
+    @GetMapping(value = "/searchOrder/{uId}/{gName}/{size}/{currentPage}/{isBuy}")
+    @ResponseBody
+    public ReturnMessage<Object> searchOrder(@PathVariable("uId")Integer uId,@PathVariable("gName")String gName,@PathVariable("size")Integer size,@PathVariable("currentPage")Integer currentPage,@PathVariable("isBuy") Boolean isBuy) throws Exception{
+        if (uId < 0 || size < 0 || currentPage < 0 ){
+            throw new SbException(100, "参数错误!");
+        }
+        User user = oUserService.queryUserByUId(uId);
+        if (StringUtils.isEmpty(user)){
+            throw new SbException(100, "不存在该用户!");
+        }
+        List<OrderVo> orderVos = new ArrayList<OrderVo>();
+        PageHelper.startPage(currentPage, size);
+        if(isBuy){//买家
+            orderVos  = orderService.searchOrderVoByUId(uId,gName);
+        }else {//卖家
+            orderVos  = orderService.searchOrderVoBySaleUId(uId,gName);
+        }
+        PageResult pageResult = new PageResult();
+        pageResult.setRows(orderVos);
+        pageResult.setTotal(new PageInfo(orderVos).getTotal());
+        ReturnMessage<Object> message = new ReturnMessage<Object>(0,"sucess",pageResult);
+        System.out.println(message);
+        return message;
+    }
+
 }
